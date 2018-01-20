@@ -240,7 +240,7 @@ if (!$prereg_data){
 </html>
 <script>
 	$(document).ready(function(){
-				$("#calendar").fullCalendar({
+			$("#calendar").fullCalendar({
 			header: {
 			left: 'prev,next today',
 			center: 'title',
@@ -262,5 +262,100 @@ if (!$prereg_data){
 				?>
 			]
 		});
+		
+		$(".read").on("click", function(){
+			var event_id = $(this).data("target");
+			fetchData(event_id);
+		});	
 	});
+	function fetchData (event_id){
+	
+	var x = $.ajax({
+			url:"getEvent.php",
+			method: "GET",
+			data:{
+				cid:event_id
+			},
+			dataType: "json",
+
+			success:function(retval){
+				$("#event_img").html("");
+				$("#event_location").html("");
+				$("#event_title").html("");
+				$("#event_description").html("");
+				$("#event_start").html("");
+				$("#event_material_req").html("");
+				$("#event_occupation").html("");
+				
+				event_img = "../admin/eventImages/"+retval[0].event_img;
+				event_id = retval[0].event_id;
+				event_location = retval[0].event_location;
+				event_name = retval[0].event_name;
+				event_description = retval[0].event_description;
+				event_location = retval[0].event_location;
+				event_start = retval[0].event_start;
+				event_material_req = retval[0].event_material_req;
+				
+				
+				$("#event_img").attr("src", event_img);
+				$("#event_location").append(event_location);
+				$("#event_title").append(event_name);
+				$("#event_description").append(event_description);
+				$("#event_start").append(event_start);
+				$("#event_material_req").append(event_material_req);
+				$("#readmore").modal("show");
+				
+				$(".prereg").attr("href", "listPreRegistered.php?cid="+event_id);
+				$(".pubToPast").attr("href", "updateToPast.php?id="+event_id);
+				
+				
+				
+				
+				
+				initMap(event_location);
+			}
+				
+		});
+		
+		
+}
+ function initMap(event_location) {
+		
+		
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: {lat: 10.3157, lng: 123.8854},
+		  zoom: 15,
+          mapTypeId: 'roadmap'
+        });
+        directionsDisplay.setMap(map);
+		var input = document.getElementById('start');
+		var autocomplete = new google.maps.places.Autocomplete(input);
+		
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        };
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('event_location').addEventListener('change', onChangeHandler);
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+		  
+        directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('event_location').innerHTML,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initMap"
+        async defer></script>
 </script>

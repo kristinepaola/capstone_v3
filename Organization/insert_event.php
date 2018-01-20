@@ -83,7 +83,7 @@ $addevent_data = mysqli_query ($sql, $addevent_query);
 
    }
 
-     //header("location: organization_dashboard.php");
+     header("location: organization_dashboard.php");
 
   }
    else {

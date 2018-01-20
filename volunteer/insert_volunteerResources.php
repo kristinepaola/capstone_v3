@@ -2,6 +2,7 @@
 	session_start();
 	require("../sql_connect.php");
 	 $id = $_SESSION['num'];
+	 $event_id = $_SESSION['event_id'];
 
 	$name = $_FILES['resources_photo']['name'];
 	$target_dir = "../admin/volunteerResourcesImages/";
@@ -16,10 +17,10 @@
 	$resources_query = "INSERT INTO volunteer_resources VALUES ('',
 																'".$_POST['resources_name']."',
 																'".$_POST['resources_description']."',
-																".$_POST['no_items'].",
 																'".$name."',
+																".$_POST['no_items'].",
+																'$event_id',
 																'$id',
-																'1',
 																NOW()
 
 																)";

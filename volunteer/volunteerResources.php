@@ -1,8 +1,9 @@
 <?php
-
 include('../sql_connect.php');
-include('Header_Organization.php');
+include('nameTitle.php');
 $id = $_SESSION['num'];
+$_SESSION['event_id'] = $_GET['id'];
+$event_id = $_SESSION['event_id'];
 
 ?>
 <html>
