@@ -22,7 +22,7 @@ if($result){
     }else if($_SESSION['identifier'] == 'organization'){
       header('location:Organization/organization_dashboard.php');
     }else{
-      header('location:admin_dashboard.php');
+      header('location:admin/admin_dashboard.php');
     }
 }else{
     $_SESSION['notThere'] = 1;
