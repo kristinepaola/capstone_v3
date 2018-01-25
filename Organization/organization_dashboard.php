@@ -45,7 +45,9 @@ if (!$adv_data){
 	echo "ERROR IN QUERY 3";
 }
 // display events status = upcoming
-$event_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'Upcoming'";
+$event_query = "SELECT * FROM event 
+				WHERE user_id = ".$id." AND event_status = 'Upcoming'
+				LIMIT 3";
 $event_data = mysqli_query($sql, $event_query);
 if (!$event_data){
 	echo "ERROR IN QUERY 4";
@@ -96,6 +98,9 @@ if (!$past_data){
 			width: 500px;
 			height: 50px;
 			border: solid 1px black;
+			margin: 5px;
+		}
+		#map{
 			margin: 5px;
 		}
 
@@ -157,6 +162,7 @@ if (!$past_data){
 				
 				while ($event_row = mysqli_fetch_array($event_data)){
 					$event_img = $event_row['event_img'];
+					
 					$img_src = "../admin/eventImages/".$event_img;
 					echo '<div class="col-sm-6 p0">
 							<div class="box-two proerty-item">
@@ -189,29 +195,30 @@ if (!$past_data){
 				  <div class="modal-body">
 					<div class="row">
 						<div class="col-xs-6">
-							<img id="event_img">
-							<h6>HOW TO GET THERE</h6>
-							<div id="floating-panel">
-							<b>Start: </b>
-							<input type = "text" id = "start" class="form-control">
+							<div class="col-xs-12">\
+								<img id="event_img">
+								<h6>HOW TO GET THERE</h6>
+								<div id="floating-panel">
+								<b>Start: </b>
+								<input type = "text" id = "start" class="form-control">
+								</div>
+								<div id="map"></div>
 							</div>
-							<div id="map"></div>
 						</div>
 						<div class="col-xs-6">
-							<p id="event_description"></p>
-							<h6>WHERE</h6>
-							<p id="event_location"></p>
-							<h6>WHEN</h6>
-							<p id="event_start"></p>
-							<h6>WHO</h6>
-							<p id="occupation"></p>
-							<h6>WHAT TO BRING</h6>
-							<p id="event_material_req"></p>
-							<a class="prereg">View Pre-Registered Volunteers</a><br>
-							<a class="volresources">View Volunteered Resources</a>
-						</div>
-						<div class="col-xs-6">
-							
+							<div class="col-xs-12">\
+								<p id="event_description"></p>
+								<h6>WHERE</h6>
+								<p id="event_location"></p>
+								<h6>WHEN</h6>
+								<p id="event_start"></p>
+								<h6>WHO</h6>
+								<p id="occupation"></p>
+								<h6>WHAT TO BRING</h6>
+								<p id="event_material_req"></p>
+								<a class="prereg">View Pre-Registered Volunteers</a><br>
+								<a class="volresources">View Volunteered Resources</a>
+							</div>
 						</div>
 					</div> 
 				  </div>

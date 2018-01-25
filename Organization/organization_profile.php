@@ -4,12 +4,9 @@
     $id = $_SESSION['num'];
 
     //display Upcoming Events
-    $event_query ="SELECT * FROM event WHERE user_id =".$id."";
+    $event_query ="SELECT * FROM event WHERE user_id =".$id." AND event_status = 'Upcoming'";
     $event_data = mysqli_query($sql, $event_query);
-      if(!$event_data){
-      echo "ERROR IN QUERY 1";
-    }
-    $event_row = mysqli_fetch_array($event_data);
+
 
     ////Organization's Profile Logo and Details
     $org_profile_query ="SELECT * FROM user WHERE user_id=".$id."";
@@ -127,6 +124,7 @@
         while ($event_row =mysqli_fetch_array($event_data)){
           $event_img = $event_row['event_img']; 
           $img_src = "../admin/eventImages/".$event_img;
+		  
           echo '<div class="col-sm-12 p0">
             <div class="box-two proerty-item">
                 <div class="item-thumb">

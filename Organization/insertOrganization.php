@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 require ("../phpmailer/vendor/autoload.php");
 $mail = new PHPMailer;
 $mail->isSMTP();
-$mail->SMTPDebug = 2;
+//$mail->SMTPDebug = 2;
 $mail->Host = 'smtp.gmail.com';
 $mail->Port = 587;
 $mail->SMTPSecure = 'tls';
@@ -51,26 +51,23 @@ if (isset($_POST['registerOrg'])){
 }
 
 //insert into user table
-$query_user = "INSERT INTO user VALUES ('',
+$query_user = "INSERT INTO user (user_id, user_name, user_password, user_type, first_name, email_address, user_location, advocacies, user_prof_pic, user_status, timestamp) VALUES ('',
                           '".$_POST['email_address']."',
-                          '".$_POST['user_password']."',
+                          md5('".$_POST['user_password']."'),
 						  '$userType',
                           '".$_POST['organization_name']."',
-						  '',
-						  '',
 						  '".$_POST['email_address']."',
 						  '".$_POST['user_location']."',
-						  '',
-						  '',
-						  '',
 						  '$insertAdv',
 						  '$name',
+						  'Active',
 						  NOW()
                           )";
 
+
 $data_user = mysqli_query($sql, $query_user);
 if (!$data_user){
-  echo "ERROR IN QUERY";
+  header("location: 404.php");
 }else{
 	
 	$d_id = mysqli_insert_id($sql);
@@ -92,20 +89,21 @@ if (!$data_user){
 							  '".$_POST['organization_name']."',
 							  '".$_POST['organization_mission']."',
 							  '".$_POST['organization_vision']."',
-							  '".$_POST['organization_date_establihed']."',
+							  '".$_POST['organization_date_established']."',
 							  '$name_cert',
 							  '$d_id',
+							  'Pending',
 							  NOW()
 							  )";
 
 	$data_cert = mysqli_query($sql, $query_cert);
 	if (!$data_cert){
-	  header("location: 404.php.php");
+	  header("location: 404.php");
 	}else{
 		if (!$mail->send()) {
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		} else {
-			echo "Email sent!";			
+			header("location:../login.php");			
 		}
 	}
 	  

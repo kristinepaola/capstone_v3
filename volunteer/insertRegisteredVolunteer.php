@@ -2,21 +2,6 @@
 session_start();
 require ("../sql_connect.php");
 
-
-//implode advocacy
-if (isset($_POST['advocacy'])){
-  $checkedAdv = $_POST['advocacy'];
-  $impAdv = array();
-  foreach($checkedAdv as $advocacies){
-    $impAdv[] = $advocacies;
-  }
-  $insertAdv = implode (", ", $impAdv);
-}else{
-  echo "select at least 1 advocacy";
-}
-
-
-
 if (isset($_POST['registerVolunteer'])){
 	$userType = 'volunteer';
 }
@@ -27,41 +12,35 @@ use PHPMailer\PHPMailer\PHPMailer;
 require ("../phpmailer/vendor/autoload.php");
 $mail = new PHPMailer;
 $mail->isSMTP();
-$mail->SMTPDebug = 2;
+//$mail->SMTPDebug = 1;
 $mail->Host = 'smtp.gmail.com';
 $mail->Port = 587;
 $mail->SMTPSecure = 'tls';
 $mail->SMTPAuth = true;
-$mail->Username = "daphnecomendador@gmail.com";
-$mail->Password = "/*^d@phy!997&";
-$mail->setFrom('webportal@gmail.com', 'iHelp');
-$mail->addReplyTo('daphnecomendador@gmail.com', 'Daphne');
+$mail->Username = "ihelpmail018@gmail.com";
+$mail->Password = "capstone";
+$mail->setFrom('ihelpmail018@gmail.com', 'iHelp');
+$mail->addReplyTo('ihelpmail018@gmail.com', 'iHelp');
 $mail->addAddress($recipient, $recipientName);
 $mail->Subject = 'Welcome to iHelp '.$recipientName.'';
 $mail->msgHTML(file_get_contents('../vol_confirmation.php'), __DIR__);
 $mail->AltBody = 'This is a plain-text message body';
 
 
-
-
-
-$query = "INSERT INTO user VALUES ('',
+$query = "INSERT INTO user (user_id, user_name, user_password, user_type, first_name, middle_name, last_name, email_address, user_location, user_status, timestamp)
+					VALUES ('',
 					'".$_POST['email']."',
-					'".$_POST['pass']."',
+					md5('".$_POST['pass']."'),
 					'$userType',
 					'".$_POST['firstName']."',
 					'".$_POST['middleName']."',
           			'".$_POST['lastName']."',
           			'".$_POST['email']."',
           			'".$_POST['address']."',
-					'',
-					'',
-					'',
-					'',
-					'',
+					'Active',
 					NOW())";
 $res = mysqli_query ($sql, $query);
-//$row = mysqli_fetch_array($res);
+
 
 if($res){
 	$id = mysqli_insert_id($sql);
@@ -71,9 +50,9 @@ if($res){
 		if (!$mail->send()) {
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		} else {
-			echo "Email sent!";			
+			header("location:../login.php");		
 		}
-		//header("location:../login.php");
+		
 	}else{
 		echo "Error inserting to volunteer_details";
 	}
