@@ -1,9 +1,10 @@
 <?php
 
-require_once 'fbConfig.php';
+// AYAW HILABTI ANG NAKA COMMENT
+// require_once 'fbConfig.php';
 
 
-unset($_SESSION['facebook_access_token']);
+// unset($_SESSION['facebook_access_token']);
 
 
 unset($_SESSION['userData']);
