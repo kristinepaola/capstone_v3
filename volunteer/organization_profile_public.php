@@ -22,7 +22,7 @@
       $img_src = "../admin/userProfPic/".$org_icon;
 
       // Display Recent Events
-      $recent_query = "SELECT * FROM event WHERE user_id = ".$org_id." AND status = 'DONE'";
+      $recent_query = "SELECT * FROM event WHERE user_id = ".$org_id." AND event_status = 'Done'";
     $recent_data = mysqli_query($sql, $recent_query);
     if (!$recent_data){
       echo "ERROR IN QUERY";
@@ -288,7 +288,31 @@
               </div>
             </div>
           </div>
-
+			<!-- END OF RECENT MODAL-->
+			<!-- Recent Modal -->
+        <div id="submitted_feedback" class="modal fade" role="dialog" action="insert_feedback.php">
+              <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>   
+                    <div class="modal-body">
+                        <textarea row="10" cols="70" id ="feedbacks" placeholder ="Type your comment here..."></textarea>
+                      <div class="modal-footer"></div>
+                    </div>
+                      <!--Star Rating-->
+                      <p><strong>Rate this Event:</strong></p>
+                        <div class="star-rating">
+                           <h3>FEEDBACK SUBMITTED!</h3>
+                        </div>
+                        <div>
+                        </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+			<!-- END OF RECENT MODAL-->
 
         
     <h2><strong>Feedbacks</strong></h2>
@@ -390,7 +414,7 @@
         method: "POST",
         dataType: "json",
         success: function(json){
-          console.log(json);
+          $("#submitted_feedback").modal("show");
         }
      })
 

@@ -54,7 +54,8 @@ $addevent_query ="INSERT INTO event VALUES ('',
                                   '$file',
                                    '$id',
 								   '".$sql->real_escape_string($first_name)."',
-								   '',	
+								   'Upcoming',
+								   '40',	
 								   NOW()
                                   )";
 
@@ -75,7 +76,8 @@ $addevent_data = mysqli_query ($sql, $addevent_query);
 
    $addocc_data = mysqli_query($sql, $addocc_query);
      if ($addocc_data){
-     echo "<p>Stored to database</p>";
+		header("location: organization_dashboard.php");
+		echo "<p>Stored to database</p>";
      }
      else{
        
@@ -83,7 +85,7 @@ $addevent_data = mysqli_query ($sql, $addevent_query);
 
    }
 
-     header("location: organization_dashboard.php");
+    
 
   }
    else {

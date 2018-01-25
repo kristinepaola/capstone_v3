@@ -10,7 +10,7 @@ if (!$data){
     exit();
 }
 $row = mysqli_fetch_array($data);
-$user_prof_pic = $row[13];
+$user_prof_pic = $row['user_prof_pic'];
 
 $user_query = "SELECT * FROM organization_details where user_id = ".$id."";
 

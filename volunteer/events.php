@@ -1,7 +1,7 @@
 <?php
 	require ("../sql_connect.php");
 	include ("nameTitle.php");
-	$query = "SELECT * FROM event WHERE event_status = ''";
+	$query = "SELECT * FROM event WHERE event_status = 'Upcoming'";
 	$data = mysqli_query($sql,$query);
 	if (!$data){
 		echo "ERROR IN QUERY";

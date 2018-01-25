@@ -165,7 +165,10 @@ $(document).ready(function(){
 	$('#daterange').daterangepicker({
 			"timePicker": true,
 			"minDate": disp_date,
-			 "endDate": disp_date
+			 "endDate": disp_date,
+			 "locale": {
+				format: 'MM/DD/YYYY h:mm A'
+			}
 	});
 	
 	

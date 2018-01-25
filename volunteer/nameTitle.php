@@ -8,7 +8,7 @@ require ("../sql_connect.php");
     echo "error";
   }
   $row = mysqli_fetch_array($data);
-  $volunteer_img = $row[13];
+  $volunteer_img = $row['user_prof_pic'];
   $img_src = "../admin/userProfPic/".$volunteer_img;
 
 	

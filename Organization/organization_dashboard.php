@@ -2,6 +2,22 @@
 include('../sql_connect.php');
 include('Header_Organization.php');
 $id = $_SESSION['num'];
+date_default_timezone_set('Asia/Manila');
+
+//GET ALL EVENT FROM THIS USER
+$current_date = date('Y-m-d H:i:s');
+$query = "SELECT * FROM event WHERE user_id = '$id'";
+$data = mysqli_query($sql,$query);
+while($row = mysqli_fetch_array($data)){
+	$datetime = $row['event_end'];
+	$event_id = $row['event_id'];
+	if ($current_date > $datetime){
+		$status_query = "UPDATE event 
+						SET event_status = 'Done'
+						WHERE event_id = '$event_id'";
+		$status_data = mysqli_query ($sql, $status_query);
+	}
+}
 
 //display followers
 $follow_query = "SELECT * FROM follow WHERE org_id = '$id'";
@@ -28,23 +44,22 @@ $adv_data = mysqli_query($sql, $adv_query);
 if (!$adv_data){
 	echo "ERROR IN QUERY 3";
 }
-// display events
-$event_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = ''";
+// display events status = upcoming
+$event_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'Upcoming'";
 $event_data = mysqli_query($sql, $event_query);
 if (!$event_data){
 	echo "ERROR IN QUERY 4";
 	exit();
 }
 //display past events
-$past_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'DONE'";
+$past_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'Done'";
 $past_data = mysqli_query($sql, $past_query);
 if (!$past_data){
 	echo "ERROR IN QUERY 5";
 	exit();
-	
-
-
 }
+
+
 
 ?>
 <!DOCTYPE html>
@@ -114,7 +129,7 @@ if (!$past_data){
 		?>
 	</div>
 	<div class="col-xs-4">
-		<h3>FOLLOWERS (<a href="#"><?php echo $follow_count?></a>)</h3>
+		<h3>FOLLOWERS (<a id="followers" data-target="<?php echo $id ?>" ><?php echo $follow_count?></a>)</h3>
 		<div class="col-xs-12">
 			<?php 
 				while($row=mysqli_fetch_array($follow_data)){
@@ -201,7 +216,7 @@ if (!$past_data){
 					</div> 
 				  </div>
 				  <div class="modal-footer">
-					<a class="pubToPast"><button class="btn btn-danger">Publish to Past Activity</button></a>
+					
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				  </div>
 				</div>
@@ -243,10 +258,59 @@ if (!$past_data){
 		</div>
 	</div>
 	
+	
+	<!-- FOLLOWER MODAL! -->
+	<div id="viewFollow" class="modal fade bd-example-modal-lg" role="dialog">
+	  <div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Followers</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="row">
+				<div class="col-xs-12" id="display_followers">
+					
+				</div>
+			</div> 
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+
+	  </div>
+	</div>
+	<!-- FOLLOWER MODAL -->
 </html>
 
 <script>
 	$(document).ready(function(){
+		$("#followers").on("click", function(){
+			var user_id = $(this).data("target");
+				$("#viewFollow").modal("show");	
+				console.log(user_id);
+				$.ajax({
+					url:"getFollowers.php",
+					method: "GET",
+					data:{
+						cid:user_id
+					},
+					dataType: "json",
+					success:function(retval){
+						for(var i = 0; i<retval.length; i++){
+							if (retval[i].user_prof_pic == ""){
+								img_icon = '<img src="../admin/default.gif" class="prof_pic_icon">';
+							}else{
+								var img_icon = '<img src="../admin/userProfPic/'+retval[i].user_prof_pic+'" class="prof_pic_icon">';
+							}
+							$("#display_followers").append(img_icon);
+						}
+					}
+					
+				});
+		});
 		$("#calendar").fullCalendar({
 			header: {
 			left: 'prev,next today',
@@ -327,7 +391,7 @@ function fetchData (event_id){
 				$("#readmore").modal("show");
 				
 				$(".prereg").attr("href", "listPreRegistered.php?cid="+event_id);
-				$(".pubToPast").attr("href", "updateToPast.php?id="+event_id);
+				$(".volresources").attr("href", "listVolResources.php?cid="+event_id);
 				
 				
 				
