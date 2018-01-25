@@ -5,7 +5,7 @@ include("../sql_connect.php");
 $page = isset($_GET['p'])? $_GET['p'] : '' ;
 
 if($page =='view'){
-	$result = "SELECT A.user_id, A.user_status, B.organization_name
+	$result = "SELECT A.user_id, A.user_status, B.organization_name, B.organization_certificate
                       FROM user A, organization_details B
                       WHERE A.user_id = B.user_id AND A.user_type = 'organization'";
 
@@ -16,7 +16,8 @@ if($page =='view'){
                      		<tr>
                      			<td><?php echo $row[0] ?></td>
                      			<td><?php echo $row[2] ?></td>
-                     			<td><?php echo $row[1] ?></td>
+                          <td><?php echo $row[1] ?></td>
+                          <td><?php echo $row[3] ?></td>
                      		</tr>
                      	<?php
                      }

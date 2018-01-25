@@ -58,14 +58,7 @@
                       </li>
                       <!-- Menu Body -->
                       <li class="user-footer">
-                        <div class="pull-left">
-                            <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
-                            </div>
-                        </div>
-                        <div class="pull-right">
-                          <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                        </div>
+                          <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
                       </li>
                     </ul>
                 </li>
