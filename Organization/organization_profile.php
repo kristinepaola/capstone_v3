@@ -7,7 +7,7 @@
     $event_query ="SELECT * FROM event WHERE user_id =".$id."";
     $event_data = mysqli_query($sql, $event_query);
       if(!$event_data){
-      echo "ERROR IN QUERY";
+      echo "ERROR IN QUERY 1";
     }
     $event_row = mysqli_fetch_array($event_data);
 
@@ -15,22 +15,22 @@
     $org_profile_query ="SELECT * FROM user WHERE user_id=".$id."";
     $org_profile_data = mysqli_query($sql, $org_profile_query);
       if(!$org_profile_data){
-        echo "ERROR IN QUERY";
+        echo "ERROR IN QUERY 2";
       }
       $org_row = mysqli_fetch_array($org_profile_data);
 
       // Display Recent Events
-      $recent_query = "SELECT * FROM event WHERE user_id = ".$id." AND status = 'DONE'";
+      $recent_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'DONE'";
     $recent_data = mysqli_query($sql, $recent_query);
     if (!$recent_data){
-      echo "ERROR IN QUERY";
+      echo "ERROR IN QUERY 3";
       exit();
     }
     // /display advocacy sa user
     $disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$id."";
     $disp_ad_data = mysqli_query($sql, $disp_ad_query);
         if (!$disp_ad_query){
-      echo "Error in Query!";
+      echo "Error in Query! 4";
       exit(); 
     }
 
@@ -39,7 +39,7 @@
     $adv_query = "SELECT * FROM advocacies";
     $adv_data = mysqli_query($sql, $adv_query);
     if (!$adv_data){
-      echo "ERROR IN QUERY";
+      echo "ERROR IN QUERY 5";
     }
 
     

@@ -1,7 +1,7 @@
 <?php
 	require ("../sql_connect.php");
 	include ("Header_Organization.php");
-	$query = "SELECT * FROM event WHERE status = ''";
+	$query = "SELECT * FROM event WHERE event_status = ''";
 	$data = mysqli_query($sql,$query);
 	if (!$data){
 		echo "ERROR IN QUERY";

@@ -40,18 +40,34 @@
                 <li><a href="list_events.php"><h3>Reports</h3></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right">
+            <div class="navbar-custom-menu pull-right" id="navbar-collapse">
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
                     Welcome Admin!</h3>
                   </a>
-                  <ul class="dropdown-menu" role="menu">                    
-                    <li><a href="#">Profile</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Sign Out</a></li>
-                  </ul>
+                   <ul class="dropdown-menu">
+                      <!-- User image -->
+                      <li class="user-header">
+                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
+
+                        <p>
+                          Admin
+                        </p>
+                      </li>
+                      <!-- Menu Body -->
+                      <li class="user-footer">
+                        <div class="pull-left">
+                            <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer">
+                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                          <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                        </div>
+                      </li>
+                    </ul>
                 </li>
               </ul>
             </div>

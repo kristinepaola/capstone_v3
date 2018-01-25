@@ -7,7 +7,7 @@ $id = $_SESSION['num'];
 $follow_query = "SELECT * FROM follow WHERE org_id = '$id'";
 $follow_data = mysqli_query($sql, $follow_query);
 	if (!$follow_data){
-		echo "ERROR QUERY IN follow TABLE";
+		echo "ERROR QUERY IN follow TABLE 1";
 	}
 $follow_count = mysqli_num_rows($follow_data);
 
@@ -17,7 +17,7 @@ $follow_count = mysqli_num_rows($follow_data);
 $disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$id."";
 $disp_ad_data = mysqli_query($sql, $disp_ad_query);
 		if (!$disp_ad_query){
-			echo "Error in Query!";
+			echo "Error in Query! 2";
 			exit(); 
 		}
 
@@ -26,20 +26,20 @@ $disp_ad_data = mysqli_query($sql, $disp_ad_query);
 $adv_query = "SELECT * FROM advocacies";
 $adv_data = mysqli_query($sql, $adv_query);
 if (!$adv_data){
-	echo "ERROR IN QUERY";
+	echo "ERROR IN QUERY 3";
 }
 // display events
-$event_query = "SELECT * FROM event WHERE user_id = ".$id." AND status = ''";
+$event_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = ''";
 $event_data = mysqli_query($sql, $event_query);
 if (!$event_data){
-	echo "ERROR IN QUERY";
+	echo "ERROR IN QUERY 4";
 	exit();
 }
 //display past events
-$past_query = "SELECT * FROM event WHERE user_id = ".$id." AND status = 'DONE'";
+$past_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'DONE'";
 $past_data = mysqli_query($sql, $past_query);
 if (!$past_data){
-	echo "ERROR IN QUERY";
+	echo "ERROR IN QUERY 5";
 	exit();
 	
 
@@ -259,7 +259,7 @@ if (!$past_data){
 					$calendar_query = "SELECT * FROM event WHERE user_id = ".$id."";
 					$calendar_data = mysqli_query($sql, $calendar_query);
 					if (!$calendar_data){
-						echo "ERROR IN QUERY";
+						echo "ERROR IN QUERY 5";
 						exit();
 					}
 
