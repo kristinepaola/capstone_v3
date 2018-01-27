@@ -1,9 +1,9 @@
 <?php
 
-require_once 'fbConfig.php';
+//require_once 'fbConfig.php';
 
 
-unset($_SESSION['facebook_access_token']);
+//unset($_SESSION['facebook_access_token']);
 
 
 unset($_SESSION['userData']);

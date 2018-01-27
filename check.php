@@ -5,9 +5,7 @@
 <?php
 session_start();
 include('sql_connect.php');
-
 $id = $_POST['id'];
-
 $result = mysqli_query($sql,"SELECT * FROM user WHERE user_name='".$id[0]."' AND user_password = md5('".$id[1]."')")
 or die(mysqli_error($sql));
 $result = mysqli_fetch_array($result);

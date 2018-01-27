@@ -58,7 +58,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse yamm" id="navigation">
                 <div class="button navbar-right">
-                    <button class="navbar-btn nav-button wow bounceInRight login" onclick=" window.open('login.php')" data-wow-delay="0.45s">Login</button>
+                    <button class="navbar-btn nav-button wow bounceInRight login" onclick=" window.open('login.php', '_self')" data-wow-delay="0.45s">Login</button>
                     <button class="navbar-btn nav-button wow fadeInRight" data-wow-delay="0.48s" id="registerModal">Register</button>
                 </div>
                 <ul class="main-nav nav navbar-nav navbar-right">

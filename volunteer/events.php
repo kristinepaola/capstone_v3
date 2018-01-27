@@ -1,11 +1,29 @@
 <?php
 	require ("../sql_connect.php");
 	include ("nameTitle.php");
-	$query = "SELECT * FROM event WHERE event_status = 'Upcoming'";
+
+	$result_per_page = 5;
+	$query = "SELECT * FROM event WHERE status = ''";
 	$data = mysqli_query($sql,$query);
+ 	$number_Result = mysqli_num_rows($data);
 	if (!$data){
 		echo "ERROR IN QUERY";
 	}
+
+        $numberPage = ceil($number_Result/$result_per_page);
+
+     if(!isset($_GET['page'])) {
+        $page = 1;
+     }else{
+        $page = $_GET['page'];
+     }
+    
+    $page_first_result = ($page-1)*$result_per_page;
+
+     $page_query = "SELECT * FROM event LIMIT ".$page_first_result.", ".$result_per_page."";
+     $page_data = mysqli_query($sql, $page_query);
+     $page_data;
+
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -16,6 +34,25 @@
 <body>
 	<head>
 		<title>iHelp | Events</title>
+		<style>
+        .pagination {
+            display: inline-block;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 2px 18px;
+            text-decoration: roboto;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {background-color: #ffde4c;}
+        </style> 
 	</head>
  <div class="page-head"> 
             <div class="container">
@@ -48,20 +85,8 @@
                                 </ul><!--/ .sort-by-list-->
 
                                 <div class="items-per-page pull-right">
-                                    <label for="items_per_page"><b>Property per page :</b></label>
-                                    <div class="sel">
-                                        <select id="items_per_page" name="per_page">
-                                            <option value="3">3</option>
-                                            <option value="6">6</option>
-                                            <option value="9">9</option>
-                                            <option selected="selected" value="12">12</option>
-                                            <option value="15">15</option>
-                                            <option value="30">30</option>
-                                            <option value="45">45</option>
-                                            <option value="60">60</option>
-                                        </select>
-                                    </div><!--/ .sel-->
-                                </div><!--/ .items-per-page-->
+                                    
+                                </div>
                             </div>
 
                         </div>
@@ -69,7 +94,14 @@
                         <div class="section"> 
                             <div id="list-type" class="proerty-th-list">
                                 <?php 
-									while($row = mysqli_fetch_array($data)){
+
+                                echo '<div class="pagination">
+                                        <a href="events.php?page='.($page-1).'">&laquo;</a>
+                                        <a href for ($page=1; $page<=$numberPage; $page++)   
+                                    echo <a href="events.php?page='. $page .'">'.$page.'</a>
+                                       <a href="events.php?page='.($page+1).'">&raquo;</a>
+                                    </div>';
+									while($row = mysqli_fetch_array($page_data)){
 										$event_image = $row['event_img'];
 										$img_src = "../admin/eventImages/".$event_image;
 										echo '	<div class="col-md-4 p0">
@@ -101,21 +133,6 @@
 								?>
                           
                             </div>
-                        </div>
-
-                        <div class="section"> 
-                            <div class="pull-right">
-                                <div class="pagination">
-                                    <ul>
-                                        <li><a href="#">Prev</a></li>
-                                        <li><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
-                            </div>                
                         </div>
 
                     </div>       

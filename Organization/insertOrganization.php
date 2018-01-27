@@ -56,7 +56,7 @@ $query_user = "INSERT INTO user (user_id, user_name, user_password, user_type, f
                           md5('".$_POST['user_password']."'),
 						  '$userType',
                           '".$_POST['organization_name']."',
-						  '".$_POST['email_address']."',
+						  '".$sql->real_escape_string($_POST['email_address'])."',
 						  '".$_POST['user_location']."',
 						  '$insertAdv',
 						  '$name',
@@ -67,7 +67,7 @@ $query_user = "INSERT INTO user (user_id, user_name, user_password, user_type, f
 
 $data_user = mysqli_query($sql, $query_user);
 if (!$data_user){
-  header("location: 404.php");
+  echo "ERROR IN QUERY 1";
 }else{
 	
 	$d_id = mysqli_insert_id($sql);
@@ -86,10 +86,10 @@ if (!$data_user){
 	//insert into user table
 
 	$query_cert = "INSERT INTO organization_details VALUES 	('',
-							  '".$_POST['organization_name']."',
-							  '".$_POST['organization_mission']."',
-							  '".$_POST['organization_vision']."',
-							  '".$_POST['organization_date_established']."',
+							  '".$sql->real_escape_string($_POST['organization_name'])."',
+							  '".$sql->real_escape_string($_POST['organization_mission'])."',
+							  '".$sql->real_escape_string($_POST['organization_vision'])."',
+							  '".$sql->real_escape_string($_POST['organization_date_established'])."',
 							  '$name_cert',
 							  '$d_id',
 							  'Pending',
@@ -98,7 +98,7 @@ if (!$data_user){
 
 	$data_cert = mysqli_query($sql, $query_cert);
 	if (!$data_cert){
-	  header("location: 404.php");
+	  echo "ERROR IN QUERY 2";
 	}else{
 		if (!$mail->send()) {
 			echo "Mailer Error: " . $mail->ErrorInfo;

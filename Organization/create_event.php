@@ -1,12 +1,19 @@
 <?php
 require ("../sql_connect.php");
+
+
 include ("Header_Organization.php");
 $org_query = "SELECT * FROM organization_details";
 $org_data = mysqli_query ($sql, $org_query);
 if(!$org_data){
 	echo "ERROR IN QUERY";
 }
-$id = $_SESSION['num'];
+//query for adv
+$dispAdv_query = "SELECT * FROM advocacies";
+$dispAdv_data = mysqli_query ($sql, $dispAdv_query);
+if (!$dispAdv_data){
+"Error in query";
+}
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -17,6 +24,13 @@ $id = $_SESSION['num'];
 	<head>
 		
 		<link rel="stylesheet" href="../daterangepicker/daterangepicker.css">
+		<style>
+		 .advicon{
+		width: 50px;
+		height: 50px;
+		margin-right: 10px;
+	  }
+		</style>
 	</head>
     <body>
 
@@ -46,7 +60,6 @@ $id = $_SESSION['num'];
                             </div>
 
                             <div class="clear">
-
                                 <div class="col-sm-6">
 									<div class="form-group">
                                         <label>Image <small>(required)</small></label>
@@ -66,12 +79,13 @@ $id = $_SESSION['num'];
                                     </div> 
 									<div class="form-group">
                                         <div id="map"></div>
-                                    </div>						
+                                    </div>
 								</div>
 								<div class="col-sm-6">
 									<div class="form-group">
 										<label>Date</label><small>(required)</small>
                                         <input type="text" name="daterange" id="daterange" class="form-control-event"/>
+										<label><small id="prompt"></small></label>
                                     </div>
 									<div class="form-group">
                                         <label>Materials To Bring<small>(equipments to bring)</small></label>
@@ -107,11 +121,32 @@ $id = $_SESSION['num'];
 											</select>
 											 <a href="#" id="addPartnership">Add</a>
 									</div>
-								</div>	
+								</div>
+								<div class='col-sm-12'>
+									<div class="form-group">
+                                      <h4 class="info-text">Select an Advocacy for this Event</h4>
+										<div class="row">  
+											<div class="col-sm-12">
+												<div class="form-group">
+													<?php
+														while ($row = mysqli_fetch_array($dispAdv_data)){
+														$advicon = $row['advocacy_icon'];
+														$img_src = "../admin/advocaciesIcon/".$advicon;
+															echo '<div class="col-sm-6 checkbox">';
+															echo "<img src='".$img_src."' class='advicon'>";
+															echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_id']."'> ".$row['advocacy_name']."<br>";
+															echo '</div>';
+													  }				  
+													?>
+												</div>
+											</div>
+										</div>
+								</div>
+								</div>
                                 </div>
 								
                                 <div class="col-sm-10 col-sm-offset-1">
-                                    <input type='submit' class='btn btn-finish btn-primary pull-right' name='submit' value='Submit' />
+                                    <input type='submit' class='btn btn-finish btn-primary pull-right' name='submit' value='Submit' id='submit'/>
                                 </div>
                                 
                             </div>
@@ -146,11 +181,9 @@ $(document).ready(function(){
 				success: function(resp){
 					$("#prompt").html(resp[0]);
 					if (resp[1] == "no"){
-						$("#next").click(function(event){
-						$("#next").prop('disabled', true);
-						});
+						$("#submit").prop('disabled', true);
 					}else{
-						$("#next").prop('disabled', false);
+						$("#submit").prop('disabled', false);
 					}
 				}
 			});
@@ -184,9 +217,7 @@ $(document).ready(function(){
 	  e.preventDefault();
     $(this).parent("div").remove();
   });
-
 // ADD PARTNERSHIP
-
   $("#addPartnership").click(function(e){
 	e.preventDefault();
     fetch();
@@ -197,16 +228,15 @@ $(document).ready(function(){
     $(this).parent("div").remove();
   });
 });
-
 function fetch(){
 	var orgList = "<div id='partnership'>Partnership with Other Organization/s:<select name='partnership[]' class='form-control-event'><option></option>";
-		$.ajax({
+		var x = $.ajax({
 			url: "displayListOrg.php",
 			method: "POST",
 			dataType: "json",
 			success: function(retval){
 				for (var i = 0; i<retval.length; i++){
-					 orgList +="<option>"+retval[i].organization_name+"</option>";
+					 orgList +="<option>"+retval[i].first_name+"</option>";
 					
 					
 				}
@@ -214,8 +244,8 @@ function fetch(){
 				$("#partnership").append(orgList);
 			}
 		})
+		console.log(x);
 	}
-
 //google search API
 function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -235,16 +265,13 @@ function initAutocomplete() {
 		var markers = [];
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
-
           if (places.length == 0) {
             return;
           }
-
           markers.forEach(function(marker) {
             marker.setMap(null);
           });
           markers = [];
-
           var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
             if (!place.geometry) {
@@ -262,9 +289,7 @@ function initAutocomplete() {
               title: place.name,
               position: place.geometry.location
             }));
-
             if (place.geometry.viewport) {
-
               bounds.union(place.geometry.viewport);
             } else {
               bounds.extend(place.geometry.location);
@@ -273,7 +298,6 @@ function initAutocomplete() {
           map.fitBounds(bounds);
         });
       }
-
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initAutocomplete" async defer></script>
 	</script>

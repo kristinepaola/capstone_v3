@@ -1,8 +1,9 @@
 <?php
 	require ("../sql_connect.php");
 	include ("Header_Organization.php");
-	$query = "SELECT * FROM event WHERE event_status = ''";
+	$query = "SELECT * FROM event WHERE event_status = 'Upcoming'";
 	$data = mysqli_query($sql,$query);
+	$num_rows = mysqli_num_rows($data);
 	if (!$data){
 		echo "ERROR IN QUERY";
 	}
@@ -49,21 +50,7 @@
                                     </li>
                                 </ul><!--/ .sort-by-list-->
 
-                                <div class="items-per-page pull-right">
-                                    <label for="items_per_page"><b>Property per page :</b></label>
-                                    <div class="sel">
-                                        <select id="items_per_page" name="per_page">
-                                            <option value="3">3</option>
-                                            <option value="6">6</option>
-                                            <option value="9">9</option>
-                                            <option selected="selected" value="12">12</option>
-                                            <option value="15">15</option>
-                                            <option value="30">30</option>
-                                            <option value="45">45</option>
-                                            <option value="60">60</option>
-                                        </select>
-                                    </div><!--/ .sel-->
-                                </div><!--/ .items-per-page-->
+                                
                             </div>
 
                         </div>
@@ -100,7 +87,9 @@
                             </div>
                         </div>
 
-                        <div class="section"> 
+                       <input type="hidden" id="numRows" value=<?php echo $num_rows ?> />
+
+                        <div class="section-pagination"> 
                             <div class="pull-right">
                                 <div class="pagination">
                                     <ul>
@@ -175,6 +164,13 @@
 			var event_id = $(this).data("target");
 			fetchDataReg(event_id);
 		});
+
+        var page = $("#numRows").val();
+        
+        if(page <= 3)
+        {
+            $(".section-pagination").hide();
+        }
 	
 	
 

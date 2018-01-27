@@ -1,11 +1,29 @@
 <?php
 	require ("../sql_connect.php");
 	include ("nameTitle.php");
+
+	$result_per_page = 5;
 	$query = "SELECT * FROM user WHERE user_type = 'organization'";
 	$data = mysqli_query($sql,$query);
+	$number_Result = mysqli_num_rows($data);
 	if (!$data){
 		echo "ERROR IN QUERY";
 	}
+
+	$numberPage = ceil($number_Result/$result_per_page);
+
+     if(!isset($_GET['page'])) {
+        $page = 1;
+     }else{
+        $page = $_GET['page'];
+     }
+    
+    $page_first_result = ($page-1)*$result_per_page;
+
+     $page_query = "SELECT * FROM user WHERE user_type = 'organization'LIMIT ".$page_first_result.", ".$result_per_page."";
+     $page_query;
+    $page_data = mysqli_query($sql,$page_query);
+   $page_query;
 	
 	
 ?>
@@ -23,6 +41,23 @@
 				font-size: 50px;
 				color:#ff0000;
 			}
+			.pagination {
+            display: inline-block;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 2px 18px;
+            text-decoration: roboto;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {background-color: #ffde4c;}
 
 			
 		</style>
@@ -58,19 +93,19 @@
                                 </ul><!--/ .sort-by-list-->
 
                                 <div class="items-per-page pull-right">
-                                    <label for="items_per_page"><b>Property per page :</b></label>
+                                    <!-- <label for="items_per_page"><b>Property per page :</b></label>
                                     <div class="sel">
                                         <select id="items_per_page" name="per_page">
-                                            <option value="3">3</option>
+                                            <option value="3" selected="selected">3</option>
                                             <option value="6">6</option>
                                             <option value="9">9</option>
-                                            <option selected="selected" value="12">12</option>
+                                            <option value="12">12</option>
                                             <option value="15">15</option>
                                             <option value="30">30</option>
                                             <option value="45">45</option>
                                             <option value="60">60</option>
                                         </select>
-                                    </div><!--/ .sel-->
+                                    </div><!--/ .sel--> 
                                 </div><!--/ .items-per-page-->
                             </div>
 
@@ -78,10 +113,16 @@
 
                         <div class="section"> 
                             <div id="list-type" class="proerty-th-list">
-                                <?php 
-									while($row = mysqli_fetch_array($data)){
+                                <?php
+                                 echo '<div class="pagination">
+                                        <a href="organizations.php?page='.($page-1).'">&laquo;</a>
+                                        <a href for ($page=1; $page<=$numberPage; $page++) {  
+                                    echo <a href="organizations.php?page='. $page .'">'.$page.'</a>
+                                      
+                                       <a href="organizations.php?page='.($page+1).'">&raquo;</a>
+                                    </div>';
+									while($row = mysqli_fetch_array($page_data)){
 										$org_id = $row['user_id'];
-										
 										$org_img = $row['user_prof_pic'];
 										$img_src = "../admin/userProfPic/".$org_img;
 										echo '	<div class="col-md-4 p0">
@@ -91,6 +132,8 @@
 														</div>
 														<div class="item-entry overflow">
 															<h1><a href="organization_profile_public.php?id='.$row['user_id'].'">'.$row['first_name'].'</a></h1>
+															 <h5>Location:<a href="">'.$row['user_location'].'</h5>
+                                                            <h6>Advocacies:<a href="">'.$row['advocacies'].'</h6>
 															<button type="button" class="btn-lg btn-success follow" data-target='.$row['user_id'].' id='.$row['user_id'].'>
 															  <center><span class="glyphicon glyphicon-heart" aria-hidden="true" ></span></center>
 															</button>
@@ -109,8 +152,9 @@
                           
                             </div>
                         </div>
+                        <input type="hidden" id="numRows" value=<?php echo $num_rows ?> />
 
-                        <div class="section"> 
+                        <div class="section-pagination"> 
                             <div class="pull-right">
                                 <div class="pagination">
                                     <ul>
@@ -159,6 +203,14 @@
 			console.log(org_id);
 			heart(org_id);
 		})
+
+		var test = $("#numRows").val();
+		//alert(test);
+		if(test <= 3)
+		{
+			$(".section-pagination").hide();
+		}
+		
 	});
 	function heart(org_id){
 			

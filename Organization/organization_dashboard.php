@@ -4,6 +4,18 @@ include('Header_Organization.php');
 $id = $_SESSION['num'];
 date_default_timezone_set('Asia/Manila');
 
+
+//GET FEEDBACKS
+$feedback_query = "SELECT A.event_name, B.first_name, C.org_id, C.event_comment, B.user_prof_pic
+FROM event A, user B, event_feedback C
+WHERE B.user_id = C.user_id
+AND B.user_type = 'volunteer' 
+AND C.org_id = '$id' 
+AND A.event_id = C.event_id 
+";
+$feedback_data = mysqli_query($sql, $feedback_query);
+
+echo $feedback_query;
 //GET ALL EVENT FROM THIS USER
 $current_date = date('Y-m-d H:i:s');
 $query = "SELECT * FROM event WHERE user_id = '$id'";
@@ -47,7 +59,7 @@ if (!$adv_data){
 // display events status = upcoming
 $event_query = "SELECT * FROM event 
 				WHERE user_id = ".$id." AND event_status = 'Upcoming'
-				LIMIT 3";
+				";
 $event_data = mysqli_query($sql, $event_query);
 if (!$event_data){
 	echo "ERROR IN QUERY 4";
@@ -139,15 +151,15 @@ if (!$past_data){
 			<?php 
 				while($row=mysqli_fetch_array($follow_data)){
 					$vol_id = $row['volunteer_id'];
-					$disp_query = "SELECT user_prof_pic FROM user WHERE user_id = '$vol_id'";
+					$disp_query = "SELECT * FROM user WHERE user_id = '$vol_id'";
 					$disp_data = mysqli_query($sql, $disp_query);
 					$icon = mysqli_fetch_array($disp_data);
 					$follower = $icon['user_prof_pic'];
 					if ($follower == ""){
-						echo '<img src="../admin/default.gif" class="prof_pic_icon" >';
+						echo '<img src="../admin/default.gif" class="prof_pic_icon" alt='.$row['first_name'].'>';
 					}else{
 						$img_src = "../admin/userProfPic/".$follower;
-						echo '<img src="'.$img_src.'" class="following_icon">';
+						echo '<img src="'.$img_src.'" class="following_icon" alt='.$row['first_name'].'>';
 					}
 					
 				}
@@ -172,7 +184,7 @@ if (!$past_data){
 								<div class="item-entry overflow">
 									<h5><a href="property-1.html">'.$event_row['event_name'].'</a></h5>
 								<div class="dot-hr"></div>
-									<span class="pull-left"><b> Date: </b>'.date("Y-m-d h:i A", strtotime($event_row['event_start'])).'</span>
+									<span class="pull-left"><b> Date: </b>'.date("M d, Y h:i A", strtotime($event_row['event_start'])).'</span>
 									<span class="pull-left"><b>Location: </b>'.$event_row['event_location'].'</span>
 									<div class="property-icon">
 										<button class="btn btn-success read"  data-target='.$event_row['event_id'].'>Read More</button>
@@ -195,7 +207,7 @@ if (!$past_data){
 				  <div class="modal-body">
 					<div class="row">
 						<div class="col-xs-6">
-							<div class="col-xs-12">\
+							<div class="col-xs-12">
 								<img id="event_img">
 								<h6>HOW TO GET THERE</h6>
 								<div id="floating-panel">
@@ -206,7 +218,7 @@ if (!$past_data){
 							</div>
 						</div>
 						<div class="col-xs-6">
-							<div class="col-xs-12">\
+							<div class="col-xs-12">
 								<p id="event_description"></p>
 								<h6>WHERE</h6>
 								<p id="event_location"></p>
@@ -261,7 +273,29 @@ if (!$past_data){
 			</div>
 			<div class="col-xs-3">
 				<h3>FEEDBACKS</h3>
-			</div>
+					<div class="panel-body recent-property-widget">
+						<ul>
+							<?php
+								while($feedback_row = mysqli_fetch_array($feedback_data)){
+									$user_prof_pic = $feedback_row['user_prof_pic'];
+									$img_src = "../admin/userProfPic/".$user_prof_pic;
+									echo '<li>
+											<div class="col-md-3 col-sm-3 col-xs-3 blg-thumb p0">
+												<a href="#"><img src="'.$img_src.'"></a>
+												
+											</div>
+											<div class="col-md-8 col-sm-8 col-xs-8 blg-entry">
+												<h6> <a href="#" class="event_name">'.$feedback_row['event_name'].'</a></h6>
+												<b><span>'.$feedback_row['first_name'].'</span></b>
+												<span class="property-price feedback">'.$feedback_row['event_comment'].'</span>
+											</div>
+										</li>';
+								}
+							?>
+
+						</ul>
+					</div>
+			</div>	
 		</div>
 	</div>
 	
@@ -379,13 +413,17 @@ function fetchData (event_id){
 				$("#event_material_req").html("");
 				$("#event_occupation").html("");
 				
+				
+				var start  = moment(retval[0].event_start).toDate();
+					start_time = moment(start).format('MMMM DD YYYY h:mm A');
+				
 				event_img = "../admin/eventImages/"+retval[0].event_img;
 				event_id = retval[0].event_id;
 				event_location = retval[0].event_location;
 				event_name = retval[0].event_name;
 				event_description = retval[0].event_description;
 				event_location = retval[0].event_location;
-				event_start = retval[0].event_start;
+				event_start = start_time;
 				event_material_req = retval[0].event_material_req;
 				
 				

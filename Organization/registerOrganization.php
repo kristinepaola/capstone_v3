@@ -140,7 +140,7 @@ if (!$dispAdv_data){
 														
 																echo "<img src='".$img_src."' class='advicon'>";
 																
-																echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_name']."'> ".$row['advocacy_name']."<br>";
+																echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_id']."'> ".$row['advocacy_name']."<br>";
 															
 															
 														  }
