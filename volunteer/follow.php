@@ -21,10 +21,7 @@ $org_name=$org_row['first_name'];
 //follow org query
 $user_query = "INSERT INTO follow VALUES ('',
 												$vol_id,
-												'$first_name',
-												'$last_name',
 												'$org_id',
-												'$org_name',
 												NOW())";
 
 $user_data = mysqli_query($sql,$user_query);

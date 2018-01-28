@@ -4,6 +4,19 @@ include('Header_Organization.php');
 $id = $_SESSION['num'];
 date_default_timezone_set('Asia/Manila');
 
+//display following
+$follow_query = "SELECT A.user_id, B.user_id, D.first_name, D.last_name, B.organization_name, D.user_prof_pic
+FROM volunteer_details A, organization_details B, follow C, user D, user E
+WHERE org_id = '$id'
+AND C.volunteer_id = A.user_id 
+AND C.org_id = B.user_id
+AND D.user_id = A.user_id
+AND E.user_id = B.user_id";
+$follow_data = mysqli_query($sql, $follow_query);
+	if (!$follow_data){
+		echo "ERROR QUERY IN follow TABLE";
+	}
+$follow_count = mysqli_num_rows($follow_data);
 
 //GET FEEDBACKS
 $feedback_query = "SELECT A.event_name, B.first_name, C.org_id, C.event_comment, B.user_prof_pic
@@ -15,7 +28,6 @@ AND A.event_id = C.event_id
 ";
 $feedback_data = mysqli_query($sql, $feedback_query);
 
-echo $feedback_query;
 //GET ALL EVENT FROM THIS USER
 $current_date = date('Y-m-d H:i:s');
 $query = "SELECT * FROM event WHERE user_id = '$id'";
@@ -31,31 +43,6 @@ while($row = mysqli_fetch_array($data)){
 	}
 }
 
-//display followers
-$follow_query = "SELECT * FROM follow WHERE org_id = '$id'";
-$follow_data = mysqli_query($sql, $follow_query);
-	if (!$follow_data){
-		echo "ERROR QUERY IN follow TABLE 1";
-	}
-$follow_count = mysqli_num_rows($follow_data);
-
-
-
-//display advocacy sa user
-$disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$id."";
-$disp_ad_data = mysqli_query($sql, $disp_ad_query);
-		if (!$disp_ad_query){
-			echo "Error in Query! 2";
-			exit(); 
-		}
-
-
-//advocacies para sa compare sa ubos		
-$adv_query = "SELECT * FROM advocacies";
-$adv_data = mysqli_query($sql, $adv_query);
-if (!$adv_data){
-	echo "ERROR IN QUERY 3";
-}
 // display events status = upcoming
 $event_query = "SELECT * FROM event 
 				WHERE user_id = ".$id." AND event_status = 'Upcoming'
@@ -65,6 +52,7 @@ if (!$event_data){
 	echo "ERROR IN QUERY 4";
 	exit();
 }
+
 //display past events
 $past_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'Done'";
 $past_data = mysqli_query($sql, $past_query);
@@ -72,6 +60,15 @@ if (!$past_data){
 	echo "ERROR IN QUERY 5";
 	exit();
 }
+
+
+//display advocacies
+$useradv_query = "SELECT A.advocacy_name, A.advocacy_icon, B.user_id, B.first_name, B.advocacies
+					FROM advocacies A, user B
+					WHERE B.user_type = 'organization' AND B.user_id = '$id'";
+$useradv_data = mysqli_query ($sql, $useradv_query);
+
+
 
 
 
@@ -125,24 +122,18 @@ if (!$past_data){
 		<a class="btn btn-success" href="create_event.php">Add an Event</a>
 		<h5>ADVOCACIES</h5>
 		<?php 
-			
-			$row = mysqli_fetch_array($disp_ad_data);
-			
+			while ($row = mysqli_fetch_array($useradv_data)){
 			$exp = explode (', ', $row['advocacies']);
 			$size = count($exp);
-			while ($adv_row = mysqli_fetch_array($adv_data)){
-			$adv_icon = $adv_row['advocacy_icon'];
+			$adv_icon = $row['advocacy_icon'];
 			$img_src = "../admin/advocaciesIcon/".$adv_icon;
 			for ($i=0; $i<$size; $i++){
 				
-					if ($exp[$i] == $adv_row['advocacy_name']){
+					if ($exp[$i] == $row['advocacy_name']){
 						echo "<img src='".$img_src."' class='adv'>";
 					}
 				}
 			}
-			//while ($row = mysqli_fetch_array($disp_ad_data)){
-				//echo $row['advocacies']." ";
-			//}
 		?>
 	</div>
 	<div class="col-xs-4">
@@ -150,11 +141,7 @@ if (!$past_data){
 		<div class="col-xs-12">
 			<?php 
 				while($row=mysqli_fetch_array($follow_data)){
-					$vol_id = $row['volunteer_id'];
-					$disp_query = "SELECT * FROM user WHERE user_id = '$vol_id'";
-					$disp_data = mysqli_query($sql, $disp_query);
-					$icon = mysqli_fetch_array($disp_data);
-					$follower = $icon['user_prof_pic'];
+					$follower = $row['user_prof_pic'];
 					if ($follower == ""){
 						echo '<img src="../admin/default.gif" class="prof_pic_icon" alt='.$row['first_name'].'>';
 					}else{
@@ -177,21 +164,21 @@ if (!$past_data){
 					
 					$img_src = "../admin/eventImages/".$event_img;
 					echo '<div class="col-sm-6 p0">
-							<div class="box-two proerty-item">
-								<div class="item-thumb">
-									<img src="'.$img_src.'" class="img_event_size">
-								</div>
-								<div class="item-entry overflow">
-									<h5><a href="property-1.html">'.$event_row['event_name'].'</a></h5>
-								<div class="dot-hr"></div>
-									<span class="pull-left"><b> Date: </b>'.date("M d, Y h:i A", strtotime($event_row['event_start'])).'</span>
-									<span class="pull-left"><b>Location: </b>'.$event_row['event_location'].'</span>
-									<div class="property-icon">
-										<button class="btn btn-success read"  data-target='.$event_row['event_id'].'>Read More</button>
+								<div class="box-two proerty-item">
+									<div class="item-thumb">
+										<img src="'.$img_src.'" class="img_event_size">
+									</div>
+									<div class="item-entry overflow">
+										<h5><a href="property-1.html">'.$event_row['event_name'].'</a></h5>
+									<div class="dot-hr"></div>
+										<span class="pull-left"><b> Date: </b>'.date("M d, Y h:i A", strtotime($event_row['event_start'])).'</span>
+										<span class="pull-left"><b>Location: </b>'.$event_row['event_location'].'</span>
+										<div class="property-icon">
+											<button class="btn btn-success read"  data-target='.$event_row['event_id'].'>Read More</button>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>';
+							</div>';
 				}
 				?>
 			</div>
@@ -449,10 +436,8 @@ function fetchData (event_id){
 		
 		
 }
- function initMap(event_location) {
-		
-		
-        var directionsService = new google.maps.DirectionsService;
+function initMap(event_location) {
+		var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 15,
@@ -484,7 +469,7 @@ function fetchData (event_id){
             window.alert('Directions request failed due to ' + status);
           }
         });
-      }
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initMap"
         async defer></script>

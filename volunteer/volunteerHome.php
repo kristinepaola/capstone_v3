@@ -13,14 +13,20 @@ AND C.user_id = E.user_id
 Group by c.event_name";
 $recommended_data = mysqli_query($sql, $recommended_query);
   
-//advocacies JOIN query
+//display advocacies
 $useradv_query = "SELECT A.advocacy_name, A.advocacy_icon, B.user_id, B.first_name, B.advocacies
 					FROM advocacies A, user B
 					WHERE B.user_type = 'volunteer' AND B.user_id = '$id'";
 $useradv_data = mysqli_query ($sql, $useradv_query);
 
 //display following
-$follow_query = "SELECT * FROM follow WHERE volunteer_id = '$id'";
+$follow_query = "SELECT A.user_id, B.user_id, D.first_name, D.last_name, B.organization_name, E.user_prof_pic
+FROM volunteer_details A, organization_details B, follow C, user D, user E
+WHERE volunteer_id = '$id'
+AND C.volunteer_id = A.user_id 
+AND C.org_id = B.user_id
+AND D.user_id = A.user_id
+AND E.user_id = B.user_id";
 $follow_data = mysqli_query($sql, $follow_query);
 	if (!$follow_data){
 		echo "ERROR QUERY IN follow TABLE";
@@ -28,15 +34,28 @@ $follow_data = mysqli_query($sql, $follow_query);
 $follow_count = mysqli_num_rows($follow_data);
 
 //select from event_preregistration
-$prereg_query = "SELECT * FROM event_preregistration WHERE user_id = '$id'";
+$prereg_query = "SELECT A.event_id, A.user_id, B.event_name, C.first_name, C.last_name, B.event_img, B.event_start, B.event_location
+FROM event_preregistration A, event B, user C
+WHERE C.user_id = '$id'
+AND A.event_id = B.event_id
+AND A.user_id = C.user_id
+AND B.event_status = 'Upcoming'";
 $prereg_data = mysqli_query ($sql, $prereg_query);
 if (!$prereg_data){
 	echo "ERROR IN event_preregistration QUERY";		
 }
 
-
-
-
+//select from event_preregistration status='done'
+$done_query = "SELECT A.event_id, A.user_id, B.event_name, C.first_name, C.last_name, B.event_img, B.event_start, B.event_location
+FROM event_preregistration A, event B, user C
+WHERE C.user_id = '$id'
+AND A.event_id = B.event_id
+AND A.user_id = C.user_id
+AND B.event_status = 'Done'";
+$done_data = mysqli_query ($sql, $done_query);
+if (!$prereg_data){
+	echo "ERROR IN event_preregistration QUERY";		
+}
 ?>
   <!DOCTYPE html>
   <html class="no-js">
@@ -115,41 +134,25 @@ if (!$prereg_data){
 							<div id="list-type" class="proerty-th">
 						<?php 
 							while($prereg_row = mysqli_fetch_array($prereg_data)){
-								//kuha event_id sa event para query sa event table
-								$event_id = $prereg_row['event_id'];
-								
-								//query event nga gi pre-register sa user
-								$curevent_query = "SELECT * FROM event WHERE event_id = '$event_id'";
-								$curevent_data = mysqli_query ($sql, $curevent_query);
-								
-								if (!$curevent_data){
-									echo "ERROR QUERY IN EVENT TABLE";
-								}
-								while ($curevent_row = mysqli_fetch_array($curevent_data)){
-									$event_img = $curevent_row['event_img'];
-									$org_id = $curevent_row['user_id'];
+									$event_img = $prereg_row['event_img'];
 									$img_src = "../admin/eventImages/".$event_img;
-									$orgname_query = "SELECT first_name FROM user WHERE user_id = '$org_id'";
-									$orgname_data = mysqli_query($sql, $orgname_query);
-									$orgname_row = mysqli_fetch_array($orgname_data);
-									$org_name = $orgname_row['first_name'];
 									echo '<div class="col-sm-6 p0">
 											<div class="box-two proerty-item">
 												<div class="item-thumb">
 													<img src="'.$img_src.'" class="img_event_size">
 												</div>
 												<div class="item-entry overflow">
-													<h5><a href="property-1.html">'.$curevent_row['event_name'].'</a></h5>
+													<h5><a href="property-1.html">'.$prereg_row['event_name'].'</a></h5>
 												<div class="dot-hr"></div>
-													<span class="pull-left"><b> Date: </b>'.date("Y-m-d h:i A", strtotime($curevent_row['event_start'])).'</span>
-													<span class="pull-left"><b>Location: </b>'.$curevent_row['event_location'].'</span>
+													<span class="pull-left"><b> Date: </b>'.date("Y-m-d h:i A", strtotime($prereg_row['event_start'])).'</span>
+													<span class="pull-left"><b>Location: </b>'.$prereg_row['event_location'].'</span>
 													<div class="property-icon">
-														<button class="btn btn-success read"  data-target='.$curevent_row['event_id'].'>Read More</button>
+													<button class="btn btn-success read"  data-target='.$prereg_row['event_id'].'>Read More</button>
 													</div>
 												</div>
 											</div>
 										</div>';
-								}
+								
 								
 							}
 						
@@ -169,13 +172,13 @@ if (!$prereg_data){
 		<h3>Following</h3>
 			<?php 
 				while($row=mysqli_fetch_array($follow_data)){
-					$org_id = $row['org_id'];
-					$disp_query = "SELECT user_prof_pic FROM user WHERE user_id = '$org_id'";
-					$disp_data = mysqli_query($sql, $disp_query);
-					$icon = mysqli_fetch_array($disp_data);
-					$follower = $icon['user_prof_pic'];
+					$follower = $row['user_prof_pic'];
 					$img_src = "../admin/userProfPic/".$follower;
-					echo '<img src="'.$img_src.'" class="following_icon">';
+					if ($follower == ""){
+						echo '<img src="../admin/default.gif" class="prof_pic_icon" alt='.$row['first_name'].'>';
+					}else{
+						echo '<img src="'.$img_src.'" class="following_icon">';
+					}
 				}
 			?>
 	</div>
@@ -191,19 +194,23 @@ if (!$prereg_data){
 			</div>
 			<div class="panel-body recent-property-widget">
 				<ul>
-					<li>
+					<?php
+					while ($done_row=mysqli_fetch_array($done_data)){
+					$event_img = $done_row['event_img'];
+					$img_src = "../admin/eventImages/".$event_img;
+					echo '<li>
 						<div class="col-md-3 col-sm-3 col-xs-3 blg-thumb p0">
-							<a href="single.html"><img src="assets/img/demo/small-property-2.jpg"></a>
-							<span class="property-seeker">
-								<b class="b-1">A</b>
-								<b class="b-2">S</b>
-							</span>
+							<img src="'.$img_src.'">
 						</div>
-						<div class="col-md-8 col-sm-8 col-xs-8 blg-entry">
-							<h6> <a href="single.html">Super nice villa </a></h6>
-							<span class="property-price">3000000$</span>
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							<h6> <a href="">'.$done_row['event_name'].' </a></h6>
+							<span class="property-price"></span>
 						</div>
-					</li>
+					</li>';					
+					}
+
+					?>
+
 				</ul>
 			</div>
 		</div>
@@ -247,7 +254,7 @@ if (!$prereg_data){
 	
 </div>
 <!-- READ MORE MODAL! -->
-			<div id="readmore" class="modal fade" role="dialog">
+			<div id="readmore" class="modal fade bd-example-modal-lg" role="dialog">
 			  <div class="modal-dialog">
 				<!-- Modal content-->
 				<div class="modal-content">
@@ -258,21 +265,34 @@ if (!$prereg_data){
 				  <div class="modal-body">
 					<div class="row">
 						<div class="col-xs-6">
-							<img id="event_img">
-							<h6>HOW TO GET THERE</h6>
+							<div class="col-xs-12">
+								<img id="event_img">
+								<h6>HOW TO GET THERE</h6>
+								<div id="floating-panel">
+								<b>Start: </b>
+								<input type = "text" id = "start" class="form-control">
+								</div>
+								<div id="map"></div>
+							</div>
 						</div>
 						<div class="col-xs-6">
-							<p id="event_description"></p>
-							<h6>WHEN</h6>
-							<p id="event_start"></p>
-							<h6>WHO</h6>
-							<p id="occupation"></p>
-							<h6>WHAT TO BRING</h6>
-							<p id="event_material_req"></p>
+							<div class="col-xs-12">
+								<p id="event_description"></p>
+								<h6>WHERE</h6>
+								<p id="event_location"></p>
+								<h6>WHEN</h6>
+								<p id="event_start"></p>
+								<h6>WHO</h6>
+								<p id="occupation"></p>
+								<h6>WHAT TO BRING</h6>
+								<p id="event_material_req"></p>
+								<a class="volresources">Volunteer Resources</a>
+							</div>
 						</div>
 					</div> 
 				  </div>
 				  <div class="modal-footer">
+					
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				  </div>
 				</div>
@@ -321,13 +341,14 @@ if (!$prereg_data){
 		
 		$(".read").on("click", function(){
 			var event_id = $(this).data("target");
+			console.log(event_id);
 			fetchData(event_id);
 		});	
 	});
 	function fetchData (event_id){
 	
 	var x = $.ajax({
-			url:"getEvent.php",
+			url:"../Organization/getEvent.php",
 			method: "GET",
 			data:{
 				cid:event_id
@@ -361,13 +382,7 @@ if (!$prereg_data){
 				$("#event_material_req").append(event_material_req);
 				$("#readmore").modal("show");
 				
-				$(".prereg").attr("href", "listPreRegistered.php?cid="+event_id);
-				$(".pubToPast").attr("href", "updateToPast.php?id="+event_id);
-				
-				
-				
-				
-				
+				$(".volresources").attr("href", "volunteerResources.php?cid="+event_id);
 				initMap(event_location);
 			}
 				
@@ -492,6 +507,40 @@ function disableButton(){
 		}
 	});
 	console.log(x);
+}
+function initMap(event_location) {
+		var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: {lat: 10.3157, lng: 123.8854},
+		  zoom: 15,
+          mapTypeId: 'roadmap'
+        });
+        directionsDisplay.setMap(map);
+		var input = document.getElementById('start');
+		var autocomplete = new google.maps.places.Autocomplete(input);
+		
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        };
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('event_location').addEventListener('change', onChangeHandler);
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+		  
+        directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('event_location').innerHTML,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initMap"

@@ -2,7 +2,7 @@
 include('../sql_connect.php');
 include('nameTitle.php');
 $id = $_SESSION['num'];
-$_SESSION['event_id'] = $_GET['id'];
+$_SESSION['event_id'] = $_GET['cid'];
 $event_id = $_SESSION['event_id'];
 
 ?>
