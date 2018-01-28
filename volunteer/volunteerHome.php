@@ -3,20 +3,21 @@ require ("../sql_connect.php");
 include("nameTitle.php");
 $id = $_SESSION['num'];
   
-//display advocacy sa user
-$disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$id."";
-$disp_ad_data = mysqli_query($sql, $disp_ad_query);
-	if (!$disp_ad_query){
-		echo "Error in Query!";
-		exit(); 
-	}
-	
-//advocacies para sa compare sa ubos		
-$adv_query = "SELECT * FROM advocacies";
-$adv_data = mysqli_query($sql, $adv_query);
-if (!$adv_data){
-	echo "ERROR IN QUERY";
-}
+//recommended activities
+$recommended_query = "SELECT DISTINCT A.advocacy_name, B.advocacy_id, B.event_id, C.event_name, C.user_id, D.user_id, D.first_name, D.advocacies, E.organization_name, C.event_img
+FROM advocacies A, event_advocacy B, event C, user D, organization_details E
+WHERE A.advocacy_id = B.advocacy_id 
+AND B.event_id = C.event_id 
+AND D.user_id = '$id'
+AND C.user_id = E.user_id
+Group by c.event_name";
+$recommended_data = mysqli_query($sql, $recommended_query);
+  
+//advocacies JOIN query
+$useradv_query = "SELECT A.advocacy_name, A.advocacy_icon, B.user_id, B.first_name, B.advocacies
+					FROM advocacies A, user B
+					WHERE B.user_type = 'volunteer' AND B.user_id = '$id'";
+$useradv_data = mysqli_query ($sql, $useradv_query);
 
 //display following
 $follow_query = "SELECT * FROM follow WHERE volunteer_id = '$id'";
@@ -76,6 +77,9 @@ if (!$prereg_data){
 				border: solid 1px black;
 				margin: 5px;
 			}
+			.alert{
+				display:inline-block;
+			}
 		  </style>
 		  <link rel='stylesheet' href='../fullcalendar/fullcalendar.min.css'/>
       </head>
@@ -91,23 +95,18 @@ if (!$prereg_data){
 							<div class="col-md-12">
 							  <h5 class="wow fadeInLeft animated">PERSONAL ADVOCACIES:</h5>
 							  <?php 
-								$row = mysqli_fetch_array($disp_ad_data);
-								
+								while ($row = mysqli_fetch_array($useradv_data)){
 								$exp = explode (', ', $row['advocacies']);
 								$size = count($exp);
-								while ($adv_row = mysqli_fetch_array($adv_data)){
-								$adv_icon = $adv_row['advocacy_icon'];
+								$adv_icon = $row['advocacy_icon'];
 								$img_src = "../admin/advocaciesIcon/".$adv_icon;
 								for ($i=0; $i<$size; $i++){
 									
-										if ($exp[$i] == $adv_row['advocacy_name']){
+										if ($exp[$i] == $row['advocacy_name']){
 											echo "<img src='".$img_src."' class='adv'>";
 										}
 									}
 								}
-								//while ($row = mysqli_fetch_array($disp_ad_data)){
-									//echo $row['advocacies']." ";
-								//}
 							?>
 							</div>
 					</div>
@@ -214,19 +213,30 @@ if (!$prereg_data){
 			</div>
 			<div class="panel-body recent-property-widget">
 				<ul>
-					<li>
+				<?php 
+				while($row = mysqli_fetch_array($recommended_data)){
+				$user_prof_pic = $row['event_img'];
+				$img_src = "../admin/eventImages/".$user_prof_pic;
+				echo '<li>
 						<div class="col-md-3 col-sm-3 col-xs-3 blg-thumb p0">
-							<a href="single.html"><img src="assets/img/demo/small-property-2.jpg"></a>
+							<a href="single.html"><img src="'.$img_src.'"></a>
 							<span class="property-seeker">
-								<b class="b-1">A</b>
-								<b class="b-2">S</b>
 							</span>
 						</div>
 						<div class="col-md-8 col-sm-8 col-xs-8 blg-entry">
-							<h6> <a href="single.html">Super nice villa </a></h6>
-							<span class="property-price">3000000$</span>
+							<h6> <a href="single.html">'.$row['event_name'].'</a></h6>
+							<span class="property-price">'.$row['organization_name'].'</span>
+							<button class="btn btn-warning view" data-target='.$row['event_id'].'>VIEW </button> 
+							<button id = '.$row['event_id'].' class="btn btn-success prereg" data-target='.$row['event_id'].'>Pre Register </button>
+							<div id="alert'.$row['event_id'].'" class="alert alert-danger red">
+								<span>You are already pre-registered in this event</span>.
+							</div>
+							</div>	
 						</div>
-					</li>
+					</li>';					
+				}
+				
+				?>
 				</ul>
 			</div>
 		</div>
@@ -236,10 +246,56 @@ if (!$prereg_data){
 	</div>
 	
 </div>
+<!-- READ MORE MODAL! -->
+			<div id="readmore" class="modal fade" role="dialog">
+			  <div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title" id="event_title"></h4>
+				  </div>
+				  <div class="modal-body">
+					<div class="row">
+						<div class="col-xs-6">
+							<img id="event_img">
+							<h6>HOW TO GET THERE</h6>
+						</div>
+						<div class="col-xs-6">
+							<p id="event_description"></p>
+							<h6>WHEN</h6>
+							<p id="event_start"></p>
+							<h6>WHO</h6>
+							<p id="occupation"></p>
+							<h6>WHAT TO BRING</h6>
+							<p id="event_material_req"></p>
+						</div>
+					</div> 
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				  </div>
+				</div>
+
+			  </div>
+			</div>
+			<!-- END OF READ MORE MODAL -->
 </body>
 </html>
 <script>
 	$(document).ready(function(){
+			$(".red").hide();
+			disableButton();
+			$(".view").click(function(){
+			var event_id = $(this).data("target");
+			viewEvent(event_id);
+			});
+			$(".prereg").click(function(){
+			var event_id = $(this).data("target");
+
+			preRegister(event_id);
+			});
+			
 			$("#calendar").fullCalendar({
 			header: {
 			left: 'prev,next today',
@@ -355,6 +411,88 @@ if (!$prereg_data){
           }
         });
       }
+function viewEvent(event_id){
+		$.ajax({
+			url:"../Organization/getEvent.php",
+			method: "GET",
+			data:{
+				cid:event_id
+			},
+			dataType: "json",
+
+			success:function(retval){
+				$("#event_img").html("");
+				$("#event_title").html("");
+				$("#event_description").html("");
+				$("#event_start").html("");
+				$("#event_material_req").html("");
+				$("#event_occupation").html("");
+				
+				event_img = "../admin/eventImages/"+retval[0].event_img;
+				event_id = retval[0].event_id;
+				event_name = retval[0].event_name;
+				event_description = retval[0].event_description;
+				event_location = retval[0].event_location;
+				event_start = moment().format('MMMM Do YYYY, h:mm a', retval[0].event_start);
+				event_material_req = retval[0].event_material_req;
+				
+				
+				$("#event_img").attr("src", event_img);
+				$("#event_title").append(event_name);
+				$("#event_description").append(event_description);
+				$("#event_start").append(event_start);
+				$("#event_material_req").append(event_material_req);
+				$("#readmore").modal("show");
+				
+				//prereg(event_id);
+			}
+				
+		});
+}
+function preRegister(event_id){
+	var x = $.ajax({
+		url: "preRegister.php",
+		method: "GET",
+		data: {id:event_id},
+		dataType: "json",
+		success: function(retval){	
+			$("#alert").modal("show");
+			check(event_id);
+		}
+	});
+	console.log(x);
+}
+function check(event_id){
+	var x = $.ajax({
+		url: "checkPreReg.php",
+		method: "GET",
+		data: {id:event_id},
+		dataType: "json",
+		success: function (retval){
+			var id = retval[1];
+			$("#"+id+"").hide();
+			$("#alert"+id+"").show();
+			$("#notif").show();
+		}
+	});
+}
+function disableButton(){
+	var x = $.ajax({
+		url: "checkAllPreReg.php",
+		method: "GET",
+		//data: {id:event_id},
+		dataType: "json",
+		success: function (retval){
+				
+				for(var i=0; i<retval.length; i++){
+					 $("#"+retval[i].event_id+"").hide();
+					 $("#alert"+retval[i].event_id+"").show();
+					 
+				}
+		}
+	});
+	console.log(x);
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initMap"
         async defer></script>

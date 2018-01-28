@@ -3,9 +3,8 @@ require ("../sql_connect.php");
 include ("Header_Organization.php");
 $id = $_GET['cid'];
 
-$query = "SELECT * FROM event_preregistration 
-		INNER JOIN user 
-		ON user.user_id=event_preregistration.user_id";
+$query = "SELECT A.event_id, B.event_name, C.first_name, C.last_name, A.timestamp FROM event_preregistration A, event B, user C WHERE  A.event_id = B.event_id AND A.user_id = C.user_id";
+echo $query;
 $data = mysqli_query($sql, $query);
 if (!$data){
 	echo "ERROR IN QUERY!";
