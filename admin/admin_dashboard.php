@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html>
 <?php 
 //index.php
 include("../sql_connect.php");
@@ -19,6 +17,9 @@ while($row = mysqli_fetch_array($result))
 }
 $data = json_encode($data);
 ?>
+<!DOCTYPE html>
+<html>
+<?php include("../sql_connect.php");?>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -55,43 +56,32 @@ $data = json_encode($data);
                   </ul>
                 </li>
                 <li><a href="list_events.php"><h3>Manage Events</h3></a></li>
-                <li><a href="reports.php" ><h3>Reports</h3></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right" id="navbar-collapse">
+            <div class="navbar-custom-menu pull-right">
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
                     Welcome Admin!</h3>
                   </a>
-                   <ul class="dropdown-menu">
-                      <!-- User image -->
-                      <li class="user-header">
-                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
-
-                        <p>
-                          Admin
-                        </p>
-                      </li>
-                      <!-- Menu Body -->
-                      <li class="user-footer">
-                          <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
-                      </li>
-                    </ul>
+                  <ul class="dropdown-menu" role="menu">                    
+                    <li class="divider"></li>
+                    <li><a href="../logout.php">Sign Out</a></li>
+                  </ul>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
   </header>
-  <div class="container">
   <div class="content-header">
     <section class="content">
       <div class="row">
         <div class="row">
-            <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer">
-            <a href="#">
+            <div class="col-md-3" ><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer"> -->
+            <div class="box box-widget widget-user">
+            <a href="vol.php">
             <div class="widget-user-header bg-white-active">
               <h3 class="widget-user-username">
 	                   	<?php
@@ -121,53 +111,9 @@ $data = json_encode($data);
             </a>
           </div>
         </div>
-        <div class="modal fade" id="modal-volunteer">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Lists of Volunteers</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table class="table table-striped">
-			                        <thead>
-			                          <tr>
-			                            <th>Name</th>
-			                          </tr>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM user
-					                                  WHERE user_type = 'volunteer'";
-
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[4] ?>
-					                            <?php echo $row[6] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>            
-            </div>
-        <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-organization">
-            <a href="#">
+        <div class="col-md-3"><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-organization"> -->
+          <div class="box box-widget widget-user">
+            <a href="org.php">
             <div class="widget-user-header bg-white-active">
               <h3 class="widget-user-username">
 	                   	<?php
@@ -199,130 +145,52 @@ $data = json_encode($data);
             </a>
           </div>
         </div>
+        <div class="col-md-3"><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-event">
+            <a href="#"> -->
+              <div class="box box-widget widget-user">
+                <a href="eve.php">
+                <div class="widget-user-header bg-white-active">
+                  <h3 class="widget-user-username">
+    	                   	<?php
+    	                   		$count = 0;
+    	                   		$result = "SELECT *
+    					                    FROM event
+                                  WHERE event_name != ''";
 
-        <div class="modal fade" id="modal-organization">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Lists of organizations</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table id="tabledit" class="table table-striped">
-			                        <thead>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM user
-					                                  WHERE user_type = 'organization'";
+    					         $info = mysqli_query($sql, $result);
 
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[4] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
+    					         while($row = mysqli_fetch_array($info)){
+    					         	$count++;
+    					         }
+    					          ?>
+    					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
+    	            </h3>
                 </div>
-              </div>            
-            </div>
-        <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-event">
-            <a href="#">
-            <div class="widget-user-header bg-white-active">
-              <h3 class="widget-user-username">
-	                   	<?php
-	                   		$count = 0;
-	                   		$result = "SELECT *
-					                    FROM event";
-
-					         $info = mysqli_query($sql, $result);
-
-					         while($row = mysqli_fetch_array($info)){
-					         	$count++;
-					         }
-					          ?>
-					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
-	            </h3>
-            </div>
-            <div class="widget-user-image">
-              <img class="img-circle" src="assets/n_event.jpg" alt="User Avatar">
-            </div>
-            <div class="box-footer">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="description-block">
+                <div class="widget-user-image">
+                  <img class="img-circle" src="assets/n_event.jpg" alt="User Avatar">
+                </div>
+                <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="description-block">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
-        </a>
+          <div class="col-md-3">
+            <div class="box box-widget widget-user">
+              <div class="container" style="width:300px;">
+                 <h3 align="center">System Performance</h3>
+                 <div id="chart"></div>
+                </div>
+              </div>
         </div>
       </div>
-      <div class="modal fade" id="modal-event">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Upcoming Events</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table id="tabledit" class="table table-striped">
-			                        <thead>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM event";
-
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[1] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>            
-            </div>
-            <div>
-            <br /><br/>
-              <div class="container" style="width:800px;">
-               <h2 align="center">System Performance</h2>
-               <div id="chart"></div>
-          </div>
     </section>
   </div>
-</div>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script>
@@ -344,10 +212,11 @@ $data = json_encode($data);
 <script src="dist/js/adminlte.min.js"></script>
 <script src="dist/js/pages/dashboard.js"></script>
 <script src="dist/js/demo.js"></script>
+<script src="plugins/dataTables/jquery.dataTables.min.js"></script>
 </body>
 </html>
 <script>
-  $(document).ready(function(){
+$(document).ready(function(){
  
  var donut_chart = Morris.Donut({
      element: 'chart',
@@ -359,7 +228,7 @@ $data = json_encode($data);
   var checked = $('input[name=user_type]:checked', '#like_form').val();
   if(checked == undefined)
   {
-   alert("");
+   alert("Please Like any Framework");
    return false;
   }
   else
@@ -379,4 +248,4 @@ $data = json_encode($data);
   }
  });
 });
-</script>>
+</script>

@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">  
+  <link rel="stylesheet" href="plugins/dataTables/dataTables.bootstrap.min.css" />
 </head>
 <body class="hold-transition skin-white layout-top-nav" onload="viewData()">
     <div class="wrapper">
@@ -37,30 +38,19 @@
                   </ul>
                 </li>
                 <li><a href="list_events.php"><h3>Manage Events</h3></a></li>
-                <li><a href="list_events.php"><h3>Reports</h3></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right" id="navbar-collapse">
+            <div class="navbar-custom-menu pull-right">
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
                     Welcome Admin!</h3>
                   </a>
-                   <ul class="dropdown-menu">
-                      <!-- User image -->
-                      <li class="user-header">
-                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
-
-                        <p>
-                          Admin
-                        </p>
-                      </li>
-                      <!-- Menu Body -->
-                      <li class="user-footer">
-                          <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
-                      </li>
-                    </ul>
+                  <ul class="dropdown-menu" role="menu">                    
+                    <li class="divider"></li>
+                    <li><a href="../logout.php">Sign Out</a></li>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -82,7 +72,6 @@
                             <th>#</th>
                             <th>Organization Name</th>
                             <th>Status</th>
-                            <th>Organization Certificate</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -91,7 +80,6 @@
                     </div>
             </section>
           </div>
-          <!-- /.box -->
         </div>
       </div>
     </section>
@@ -134,10 +122,16 @@
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
 <script src="dis/js/pages/jquery-3.2.1.js"></script>
-<script src="plugins/jqueryplugin/jquery.tabledit.js"></script>        
+<script src="plugins/jqueryplugin/jquery.tabledit.js"></script>  
+<script src="plugins/dataTables/jquery.dataTables.min.js"></script>  
+<script src="plugins/dataTables/dataTables.bootstrap.min.js"></script>      
 </body>
 </html>
 <script>
+
+$(document).ready(function(){  
+      $('#tabledit').DataTable();  
+ }); 
 function viewData(){
       $.ajax({
         url: "Model/o_edit.php?p=view",
