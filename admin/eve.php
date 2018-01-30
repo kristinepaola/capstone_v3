@@ -31,19 +31,31 @@
            <script src="plugins/dataTables/jquery.dataTables.min.js"></script>  
            <script src="plugins/dataTables/dataTables.bootstrap.min.js"></script> 
            <script src="plugins/dataTables/bootstrap.min.js"></script>             
-           <link rel="stylesheet" href="plugins/dataTables/dataTables.bootstrap.min.css" />  
+           <link rel="stylesheet" href="plugins/dataTables/dataTables.bootstrap.min.css" />
+           <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" href="bower_components/morris.js/morris.css">
+  <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
+  <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">   
       </head>  
       <body>  
         <br/>
            <div class="container">
             <div class="pull-right"><a href="admin_dashboard.php" class="btn btn-info">
-              <span class="glyphicon glyphicon-circle-arrow-left"></span> Back to Home
+              <span class="glyphicon glyphicon-home"></span> Back to Home
             </a> </div>
            <br/>
                 <h3>iHelp | Events</h3>  
                 <br/>  
                 <div class="table-responsive">  
-                     <table id="employee_data" class="table table-striped table-bordered">  
+                     <table id="event_data" class="table table-striped table-bordered">  
                           <thead>  
                                <tr>  
                                     <td>Event Name</td>
@@ -76,6 +88,6 @@
  </html>  
  <script>  
  $(document).ready(function(){  
-      $('#employee_data').DataTable();  
+      $('#event_data').DataTable();  
  });  
  </script>  

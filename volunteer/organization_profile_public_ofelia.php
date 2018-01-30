@@ -244,23 +244,23 @@
                       <!--Star Rating-->
                       <p><strong>Rate this Event:</strong></p>
                         <div class="star-rating">
-                            <input id="star-5" type="radio" name="excellent" value="star-5" id="excellent">
+                            <input id="star-5" type="radio" name="excellent" value="5" id="excellent" class="star">
                             <label for="star-5" title="5 stars">
                                 <i class="active fa fa-star" aria-hidden="true"></i>
                             </label>
-                            <input id="star-4" type="radio" name="Very Good" value="star-4" id="Very Good">
+                            <input id="star-4" type="radio" name="Very Good" value="4" id="Very Good" class="star">
                             <label for="star-4" title="4 stars">
                                 <i class="active fa fa-star" aria-hidden="true"></i>
                             </label>
-                            <input id="star-3" type="radio" name="Good" value="star-3" id="Good">
+                            <input id="star-3" type="radio" name="Good" value="3" id="Good" class="star">
                             <label for="star-3" title="3 stars">
                                 <i class="active fa fa-star" aria-hidden="true"></i>
                             </label>
-                            <input id="star-2" type="radio" name="Fair" value="star-2" id="Fair">
+                            <input id="star-2" type="radio" name="Fair" value="2" id="Fair" class="star">
                             <label for="star-2" title="2 stars">
                                 <i class="active fa fa-star" aria-hidden="true"></i>
                             </label>
-                            <input id="star-1" type="radio" name="Poor" value="star-1" id="Poor">
+                            <input id="star-1" type="radio" name="Poor" value="1" id="Poor" class="star">
                             <label for="star-1" title="1 star">
                                 <i class="active fa fa-star" aria-hidden="true"></i>
                             </label>
@@ -355,14 +355,14 @@
       $("#submit").on("click", function(){
       
       var eventFeedback = $("#feedbacks").val();
-      var rating = 5;
-      
+      var rating = ($".star").val();
+		
+		console.log(rating);
 
      var feedback = {
       ev_id:id,
       event_rating: rating,
-      event_comment: eventFeedback,
-      user_id: 2
+      event_comment: eventFeedback
      };
 
      console.log(feedback);

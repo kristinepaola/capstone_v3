@@ -3,62 +3,72 @@
     include ("nameTitle.php");
     $org_id = $_GET['id'];
 	
-	//display Upcoming Events
-    $event_query ="SELECT * FROM event WHERE user_id =".$org_id."";
-    $event_data = mysqli_query($sql, $event_query);
-      if(!$event_data){
-      echo "ERROR IN QUERY";
-    }
-    $event_row = mysqli_fetch_array($event_data);
-
-    ////Organization's Profile Logo and Details
-    $org_profile_query ="SELECT * FROM user WHERE user_id=".$org_id."";
-    $org_profile_data = mysqli_query($sql, $org_profile_query);
-      if(!$org_profile_data){
-        echo "ERROR IN QUERY";
-      }
-      $org_row = mysqli_fetch_array($org_profile_data);
-	  $org_icon = $org_row['user_prof_pic'];
-      $img_src = "../admin/userProfPic/".$org_icon;
-
-      // Display Recent Events
-      $recent_query = "SELECT * FROM event WHERE user_id = ".$org_id." AND event_status = 'Done'";
-    $recent_data = mysqli_query($sql, $recent_query);
-    if (!$recent_data){
-      echo "ERROR IN QUERY";
-      exit();
-    }
-    // /display advocacy sa user
-    $disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$org_id."";
-    $disp_ad_data = mysqli_query($sql, $disp_ad_query);
-        if (!$disp_ad_query){
-      echo "Error in Query!";
-      exit(); 
-    }
-
-
-    //advocacies para sa compare sa ubos    
-    $adv_query = "SELECT * FROM advocacies";
-    $adv_data = mysqli_query($sql, $adv_query);
-    if (!$adv_data){
-      echo "ERROR IN QUERY";
-    }
-	
-	//query org details
-	$user_query = "SELECT * FROM organization_details where user_id = ".$org_id."";
-
-	$user_data = mysqli_query ($sql, $user_query);
-	if (!$user_data){
-		echo "ERROR IN QUERY";
+	//for cnt nga upcoming
+	$cnt_query = "SELECT * FROM event 
+					WHERE user_id = ".$id." AND event_status = 'Upcoming'
+					";
+	$cnt_data = mysqli_query($sql, $cnt_query);
+	if (!$cnt_data){
+		echo "ERROR IN QUERY 4";
 		exit();
 	}
-	$user_row = mysqli_fetch_array($user_data);
+	$cnt = mysqli_num_rows($cnt_data);
+	
+	//GET FEEDBACKS
+	$feedback_query = "SELECT A.event_name, B.first_name, C.org_id, C.event_comment, B.user_prof_pic, C.timestamp
+	FROM event A, user B, event_feedback C
+	WHERE B.user_id = C.user_id
+	AND B.user_type = 'volunteer' 
+	AND C.org_id = '$org_id' 
+	AND A.event_id = C.event_id
+	";
+	$feedback_data = mysqli_query($sql, $feedback_query);
+	
+	//org details query
+	$org_query = "SELECT B.organization_name, A.user_prof_pic, A.email_address, A.user_location, A.advocacies, B.organization_mission, B.organization_vision, C.advocacy_name, C.advocacy_icon	
+	FROM user A, organization_details B, advocacies C
+	WHERE A.user_id = '$org_id'
+	AND A.user_id = B.user_id";
+	
+	$org_data = mysqli_query($sql, $org_query);
+	$org_row = mysqli_fetch_array($org_data);
+	$org_icon = $org_row['user_prof_pic'];
+    $img_src = "../admin/userProfPic/".$org_icon;
+	
+	// display events status = upcoming
+	$event_query = "SELECT * FROM event 
+					WHERE user_id = ".$org_id." AND event_status = 'Upcoming'
+					LIMIT 4
+					";
+	$event_data = mysqli_query($sql, $event_query);
+	if (!$event_data){
+		echo "ERROR IN QUERY 4";
+		exit();
+	}
+	
+	//for cnt nga upcoming
+	$cnt_query = "SELECT * FROM event 
+					WHERE user_id = ".$org_id." AND event_status = 'Upcoming'
+					";
+	$cnt_data = mysqli_query($sql, $cnt_query);
+	if (!$cnt_data){
+		echo "ERROR IN QUERY 4";
+		exit();
+	}
+	$cnt = mysqli_num_rows($cnt_data);
+	//display past events
+	$past_query = "SELECT * FROM event WHERE user_id = ".$org_id." AND event_status = 'Done'";
+	$past_data = mysqli_query($sql, $past_query);
+	if (!$past_data){
+		echo "ERROR IN QUERY 5";
+		exit();
+	}
 
-    
-?>
+	?>
 <!DOCTYPE html>
 <html>
 <head>
+	<title><?php echo $org_row['organization_name'] ?></title>
   <style>
       .prof_pic_logo{
         height: 150px;
@@ -107,7 +117,7 @@
     <div class="col-md-12">  
      <div class="col-md-8"> 
 
-        <h2>Welcome <strong><?php echo $user_row['organization_name']; ?></strong></h2>
+        <h2><strong><?php echo $org_row['organization_name']; ?></strong></h2>
 
        <!--  Organization's logo -->
        <div class="col-md-4" id="">
@@ -121,25 +131,19 @@
           <h6><strong>Email: </strong><?php echo $org_row['email_address'];?></h6>
           <h4><strong>ADVOCACIES:</strong></h4>
           <?php 
-            
-            $row = mysqli_fetch_array($disp_ad_data);
-            
-            $exp = explode (', ', $row['advocacies']);
-            $size = count($exp);
-            while ($adv_row = mysqli_fetch_array($adv_data)){
-            $adv_icon = $adv_row['advocacy_icon'];
-            $img_src = "../admin/advocaciesIcon/".$adv_icon;
-            for ($i=0; $i<$size; $i++){
-              
-                if ($exp[$i] == $adv_row['advocacy_name']){
-                  echo "<img src='".$img_src."' class='adv'>";
-                }
-              }
-            }
-            //while ($row = mysqli_fetch_array($disp_ad_data)){
-              //echo $row['advocacies']." ";
-            //}
-          ?>
+			while ($row = mysqli_fetch_array($org_data)){
+			$exp = explode (', ', $row['advocacies']);
+			$size = count($exp);
+			$adv_icon = $row['advocacy_icon'];
+			$img_src = "../admin/advocaciesIcon/".$adv_icon;
+			for ($i=0; $i<$size; $i++){
+				
+					if ($exp[$i] == $row['advocacy_name']){
+						echo "<img src='".$img_src."' class='adv'>";
+					}
+				}
+			}
+		?>
 
         </div> 
           
@@ -148,22 +152,29 @@
       </div>
         <div class="col-md-4">
             <h3><strong>Mission</strong></h3>
-            <?php echo $user_row['organization_mission'];?>
+            <?php echo $org_row['organization_mission'];?>
             <h3><strong>Vision</strong></h3>
-            <?php echo $user_row['organization_vision'];?>
+            <?php echo $org_row['organization_vision'];?>
         </div>
    </div>
 </div>
 
 <div class="col-md-12">
-  <div class="col-md-4">
-    <h2><strong>Upcoming Activities</strong></h2>
+  <div class="col-md-12">
+    			<h3><strong>UPCOMING ACTIVITIES</strong> <?php 
+				if ($cnt > 4){
+					echo '<a href="moreEvents.php?id=<?php echo $id?>">(SEE MORE)</a>';
+				}else{
+					echo "";
+				}
+			
+			?></h3>
     <div id="list-type" class="proerty-th">
          <?php
         while ($event_row =mysqli_fetch_array($event_data)){
           $event_img = $event_row['event_img']; 
           $img_src = "../admin/eventImages/".$event_img;
-          echo '<div class="col-sm-12 p0">
+          echo '<div class="col-sm-3 p0">
             <div class="box-two proerty-item">
                 <div class="item-thumb">
                     <a href="#" ><img src ="'.$img_src.'"></a>
@@ -179,7 +190,62 @@
         </div>';
         }
         ?>
-             <!-- READ MORE MODAL! -->
+	</div>
+</div>
+</div>
+  <div class="col-md-12">
+    <h2><strong>Recent Activities</strong></h2>
+		<div id="list-type" class="proerty-th">
+       <?php 
+        while ($recent_row = mysqli_fetch_array($past_data)){
+              $event_img = $recent_row['event_img'];
+              $img_src = "../admin/eventImages/".$event_img;
+              echo '<div class="col-sm-3 p0">
+					  <div class="box-two proerty-item">
+						<div class="item-thumb">
+						  <img src="'.$img_src.'">
+						</div>
+						<div class="item-entry overflow">
+						  <h5><a href="property-1.html">'.$recent_row['event_name'].'</a></h5>
+						<div class="dot-hr"></div>
+						  <span class="pull-left"><b>Location: </b>'.$recent_row['event_location'].'</span> 
+						  <span class="pull-left"><b> Date: </b>'.date("M d, Y h:i A", strtotime($recent_row['event_start'])).'</span>
+						  
+						</div>
+						<div class="property-icon">
+							<button class="btn btn-success feedbacks"  class="feedbacks" data-id='.$recent_row['event_id'].'>Give Feedbacks</button>
+						  </div>
+					  </div>
+					</div>';
+        }
+      ?>
+	  </div>
+	</div>
+	<div class="col-xs-12">
+	<h2><strong>Feedbacks</strong></h2>
+	<div class="col-xs-4">
+	<?php
+			while($feedback_row = mysqli_fetch_array($feedback_data)){
+				$user_prof_pic = $feedback_row['user_prof_pic'];
+				$img_src = "../admin/userProfPic/".$user_prof_pic;
+				 echo '<div class="row comment">
+					<div class="col-sm-3 col-md-2 text-center-xs">
+						<p>
+							<img src="'.$img_src.'" class="img-responsive img-circle" alt="">
+						</p>
+					</div>
+					<div class="col-sm-9 col-md-10">
+						<h5 class="text-uppercase">'.$feedback_row['first_name'].'</h5>
+						<p class="posted"><i class="fa fa-clock-o"></i> '.date("M d, Y h:i A", strtotime($feedback_row['timestamp'])).'</p>
+						<p>'.$feedback_row['event_comment'].'</p>
+					</div>
+				</div>';
+			}
+			?>
+	</div>
+
+  </div>
+       <!-- READ MORE MODAL! -->
       <div id="readmore" class="modal fade" role="dialog">
         <div class="modal-dialog">
         <!-- Modal content-->
@@ -215,35 +281,7 @@
         </div>
       </div>
       <!-- END OF READ MORE MODAL -->
-  <div class="col-md-12">
-    <h2><strong>Recent Activities</strong></h2>
-		<div id="list-type" class="proerty-th">
-       <?php 
-        while ($recent_row = mysqli_fetch_array($recent_data)){
-              $event_img = $recent_row['event_img'];
-              $img_src = "../admin/eventImages/".$event_img;
-              echo '<div class="col-sm-6 p0">
-					  <div class="box-two proerty-item">
-						<div class="item-thumb">
-						  <img src="'.$img_src.'">
-						</div>
-						<div class="item-entry overflow">
-						  <h5><a href="property-1.html">'.$recent_row['event_name'].'</a></h5>
-						<div class="dot-hr"></div>
-						  <span class="pull-left"><b>Location: </b>'.$recent_row['event_location'].'</span> 
-						  <span class="pull-left"><b> Date: </b>'.date("Y-m-d h:i A", strtotime($recent_row['event_start'])).'</span>
-						  
-						</div>
-						<div class="property-icon">
-							<button class="btn btn-success feedbacks"  class="feedbacks" data-id='.$recent_row['event_id'].'>Give Feedbacks</button>
-						  </div>
-					  </div>
-					</div>';
-        }
-      ?>
-	  </div>
-	</div>
-        <!-- Recent Modal -->
+	          <!-- Recent Modal -->
         <div id="feedbacksmodal" class="modal fade" role="dialog" action="insert_feedback.php">
               <div class="modal-dialog">
               <!-- Modal content-->
@@ -288,38 +326,6 @@
               </div>
             </div>
           </div>
-			<!-- END OF RECENT MODAL-->
-			<!-- Recent Modal -->
-        <div id="submitted_feedback" class="modal fade" role="dialog" action="insert_feedback.php">
-              <div class="modal-dialog">
-              <!-- Modal content-->
-              <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>   
-                    <div class="modal-body">
-                        <textarea row="10" cols="70" id ="feedbacks" placeholder ="Type your comment here..."></textarea>
-                      <div class="modal-footer"></div>
-                    </div>
-                      <!--Star Rating-->
-                      <p><strong>Rate this Event:</strong></p>
-                        <div class="star-rating">
-                           <h3>FEEDBACK SUBMITTED!</h3>
-                        </div>
-                        <div>
-                        </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-			<!-- END OF RECENT MODAL-->
-
-        
-    <h2><strong>Feedbacks</strong></h2>
-
-  </div>
-</div>
-
 </body>
 </html>
 <script>
@@ -346,7 +352,7 @@
     // UPCOMING ACTIVITIES
   function fetchData (event_id){
     $.ajax({
-        url:"../Organization/getEvent.php",
+        url:"getEvent.php",
         method: "GET",
         data:{
           cid:event_id
@@ -376,9 +382,7 @@
         $("#event_description").append(event_description);
         $("#event_start").append(event_start);
         $("#event_material_req").append(event_material_req);
-        $("#readmore").modal("show");  
-
-		$(".volresources").attr("href", "volunteerResources.php?id="+event_id);		
+        $("#readmore").modal("show");   
         }  
     });
   }
@@ -409,12 +413,12 @@
 
      console.log(feedback);
      var x = $.ajax({
-        url: "insertFeedback.php",
+        url: "../volunteer/insertFeedback.php",
         data: feedback,
         method: "POST",
         dataType: "json",
         success: function(json){
-          $("#submitted_feedback").modal("show");
+          console.log(json);
         }
      })
 

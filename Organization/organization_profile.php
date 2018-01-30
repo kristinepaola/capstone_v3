@@ -2,14 +2,23 @@
     require ("../sql_connect.php");
     include ("Header_Organization.php");
     $id = $_SESSION['num'];
-
+	
+	//GET FEEDBACKS
+	$feedback_query = "SELECT A.event_name, B.first_name, C.org_id, C.event_comment, B.user_prof_pic, C.timestamp
+	FROM event A, user B, event_feedback C
+	WHERE B.user_id = C.user_id
+	AND B.user_type = 'volunteer' 
+	AND C.org_id = '$id' 
+	AND A.event_id = C.event_id 
+	";
+	$feedback_data = mysqli_query($sql, $feedback_query);
+	
+	
+	//karaan
     //display Upcoming Events
-    $event_query ="SELECT * FROM event WHERE user_id =".$id."";
+    $event_query ="SELECT * FROM event WHERE user_id =".$id." AND event_status = 'Upcoming'";
     $event_data = mysqli_query($sql, $event_query);
-      if(!$event_data){
-      echo "ERROR IN QUERY 1";
-    }
-    $event_row = mysqli_fetch_array($event_data);
+
 
     ////Organization's Profile Logo and Details
     $org_profile_query ="SELECT * FROM user WHERE user_id=".$id."";
@@ -26,7 +35,7 @@
       echo "ERROR IN QUERY 3";
       exit();
     }
-    // /display advocacy sa user
+    ///display advocacy sa user
     $disp_ad_query = "SELECT advocacies FROM user WHERE user_id = ".$id."";
     $disp_ad_data = mysqli_query($sql, $disp_ad_query);
         if (!$disp_ad_query){
@@ -47,6 +56,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>Your Profile</title>
   <style>
       .prof_pic_logo{
         height: 150px;
@@ -119,15 +129,15 @@
    </div>
 </div>
 
-<div class="col-md-12">
-  <div class="col-md-4">
-    <h2><strong>Upcoming Activities</strong></h2>
+  <div class="col-md-12">
+     <h2><strong>Upcoming Activities</strong></h2>
     <div id="list-type" class="proerty-th">
          <?php
         while ($event_row =mysqli_fetch_array($event_data)){
           $event_img = $event_row['event_img']; 
           $img_src = "../admin/eventImages/".$event_img;
-          echo '<div class="col-sm-12 p0">
+		  
+          echo '<div class="col-sm-3 p0">
             <div class="box-two proerty-item">
                 <div class="item-thumb">
                     <a href="#" ><img src ="'.$img_src.'"></a>
@@ -143,6 +153,88 @@
         </div>';
         }
         ?>
+	</div> 
+  </div>
+
+  <div class="col-xs-12">
+    <h2><strong>Recent Activities</strong></h2>
+		<div id="list-type" class="proerty-th">
+       <?php 
+        while ($recent_row = mysqli_fetch_array($recent_data)){
+              $event_img = $recent_row['event_img'];
+              $img_src = "../admin/eventImages/".$event_img;
+              echo '<div class="col-sm-3 p0">
+						<div class="box-two proerty-item">
+							<div class="item-thumb">
+								<img src="'.$img_src.'">
+							</div>
+							<div class="item-entry overflow">
+								<h5><a href="property-1.html">'.$recent_row['event_name'].'</a></h5>
+								<div class="dot-hr"></div>
+								<span class="pull-left"><b>Location: </b>'.$recent_row['event_location'].'</span> 
+								<span class="pull-left"><b> Date: </b>'.date("M d, Y h:i A", strtotime($recent_row['event_start'])).'</span>
+                  
+							</div>
+							<div class="property-icon">
+								<button class="btn btn-success feedbacks"  class="feedbacks" data-id='.$recent_row['event_id'].'>Give Feedbacks</button>
+							</div>
+						</div>
+					</div>';
+        }
+      ?>
+		</div>
+	</div>
+	<div class="col-xs-12">
+    <h2><strong>Feedbacks</strong></h2>
+	<div class="col-xs-4">
+		<section id="comments" class="comments"> 
+		<?php
+		while($feedback_row = mysqli_fetch_array($feedback_data)){
+			$user_prof_pic = $feedback_row['user_prof_pic'];
+			$img_src = "../admin/userProfPic/".$user_prof_pic;
+			 echo '<div class="row comment">
+				<div class="col-sm-3 col-md-2 text-center-xs">
+					<p>
+						<img src="'.$img_src.'" class="img-responsive img-circle" alt="">
+					</p>
+				</div>
+				<div class="col-sm-9 col-md-10">
+					<h5 class="text-uppercase">'.$feedback_row['first_name'].'</h5>
+					<p class="posted"><i class="fa fa-clock-o"></i> '.date("M d, Y h:i A", strtotime($feedback_row['timestamp'])).'</p>
+					<p>'.$feedback_row['event_comment'].'</p>
+				</div>
+			</div>';
+		}
+		?>
+	</section>
+	</div>
+
+	</div>
+
+  </div>
+</div>
+        <!-- Add Feedback Modal -->
+        <div id="feedbacksmodal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"></h4>
+                  <p><strong>GIVE YOUR FEEDBACKS!</strong></p>
+                </div>
+                <div class="modal-body">
+                  <textarea row="10" cols="70"id ="feedbacks" placeholder ="Type your comment here..."></textarea>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Submit</button>
+                
+                </div>
+              </div>
+
+              </div>
+            </div>
+          </div>
+
       <!-- READ MORE MODAL! -->
       <div id="readmore" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -177,59 +269,6 @@
         </div>
       </div>
       <!-- END OF READ MORE MODAL -->
-  <div class="col-xs-12">
-    <h2><strong>Recent Activities</strong></h2>
-		<div id="list-type" class="proerty-th">
-       <?php 
-        while ($recent_row = mysqli_fetch_array($recent_data)){
-              $event_img = $recent_row['event_img'];
-              $img_src = "../admin/eventImages/".$event_img;
-              echo '<div class="col-sm-6 p0">
-						<div class="box-two proerty-item">
-							<div class="item-thumb">
-								<img src="'.$img_src.'">
-							</div>
-								<div class="item-entry overflow">
-								<h5><a href="property-1.html">'.$recent_row['event_name'].'</a></h5>
-								<div class="dot-hr"></div>
-								<span class="pull-left"><b>Location: </b>'.$recent_row['event_location'].'</span> 
-								<span class="pull-left"><b> Date: </b>'.date("Y-m-d h:i A", strtotime($recent_row['event_start'])).'</span>
-                  
-						</div>
-							<div class="property-icon">
-								<button class="btn btn-success feedbacks"  class="feedbacks" data-id='.$recent_row['event_id'].'>Give Feedbacks</button>
-							</div>
-						</div>
-            </div>';
-        }
-      ?>
-        <!-- Recent Modal -->
-        <div id="feedbacksmodal" class="modal fade" role="dialog">
-              <div class="modal-dialog">
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title"></h4>
-                  <p><strong>GIVE YOUR FEEDBACKS!</strong></p>
-                </div>
-                <div class="modal-body">
-                  <textarea row="10" cols="70"id ="feedbacks" placeholder ="Type your comment here..."></textarea>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Submit</button>
-                
-                </div>
-              </div>
-
-              </div>
-            </div>
-          </div>
-
-    <h2><strong>Feedbacks</strong></h2>
-
-  </div>
-</div>
-
 </body>
 </html>
 <script>

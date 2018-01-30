@@ -12,7 +12,8 @@
 												'".$_POST['event_comment']."',
 												".$_POST['ev_id'].",
 												".$org_id.",
-												'$user_id')";
+												'$user_id',
+												NOW())";
 
 
 	

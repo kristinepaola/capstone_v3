@@ -42,7 +42,8 @@ $data = json_encode($data);
       <header class="main-header">
         <nav class="navbar navbar-static-top">
           <div class="container">
-            <div class="navbar-header">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="admin_dashboard.php"><img src="../assets/img/iHelplogo.png" height="48px" width="149px" alt=""></a>
             </div>
             <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
               <ul class="nav navbar-nav">
@@ -55,7 +56,7 @@ $data = json_encode($data);
                     <li><a href="list_organizations.php"><h3><i class="glyphicon glyphicon-user"></i> Organizations</h3></a></li>
                   </ul>
                 </li>
-                <li><a href="list_events.php"><h3>Manage Events</h3></a></li>
+                <li><a href="eve.php"><h3>Manage Events</h3></a></li>
               </ul>
             </div>
             <div class="navbar-custom-menu pull-right">
@@ -163,7 +164,7 @@ $data = json_encode($data);
     					         	$count++;
     					         }
     					          ?>
-    					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
+    					          <?php echo $count?>  <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
     	            </h3>
                 </div>
                 <div class="widget-user-image">

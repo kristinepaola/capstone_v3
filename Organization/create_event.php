@@ -1,12 +1,19 @@
 <?php
 require ("../sql_connect.php");
+
+
 include ("Header_Organization.php");
 $org_query = "SELECT * FROM organization_details";
 $org_data = mysqli_query ($sql, $org_query);
 if(!$org_data){
 	echo "ERROR IN QUERY";
 }
-$id = $_SESSION['num'];
+//query for adv
+$dispAdv_query = "SELECT * FROM advocacies";
+$dispAdv_data = mysqli_query ($sql, $dispAdv_query);
+if (!$dispAdv_data){
+"Error in query";
+}
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -17,19 +24,15 @@ $id = $_SESSION['num'];
 	<head>
 		
 		<link rel="stylesheet" href="../daterangepicker/daterangepicker.css">
+		<style>
+		 .advicon{
+		width: 50px;
+		height: 50px;
+		margin-right: 10px;
+	  }
+		</style>
 	</head>
     <body>
-
-        
-        <!-- Body content -->
-        
-        <!--End top header -->
-
-        <!-- End of nav bar -->
-
-        <!-- End page header --> 
-
-        <!-- property area -->
         <div class="content-area user-profiel" style="background-color: #FCFCFC;">&nbsp;
             <div class="container">   
                 <div class="row">
@@ -46,7 +49,6 @@ $id = $_SESSION['num'];
                             </div>
 
                             <div class="clear">
-
                                 <div class="col-sm-6">
 									<div class="form-group">
                                         <label>Image <small>(required)</small></label>
@@ -54,64 +56,94 @@ $id = $_SESSION['num'];
                                     </div>
                                     <div class="form-group">
                                         <label>Event Title <small>(required)</small></label>
-                                        <input name="event_name" type="text" id="event_name" class="form-control-event">
+                                        <input required name="event_name" type="text" id="event_name" class="form-control-event">
                                     </div> 
 									<div class="form-group">
                                         <label>Event Description <small>(required)</small></label>
-                                        <textarea name="event_description" id="event_description" rows ="5" class="form-control"></textarea>
+                                        <textarea required name="event_description" id="event_description" rows ="5" class="form-control"></textarea>
                                     </div> 
 									<div class="form-group">
                                         <label>Location<small>(required)</small></label>
-                                        <input name="event_location" type="text" id="event_location" class="form-control-event">
+                                        <input required name="event_location" type="text" id="event_location" class="form-control-event">
                                     </div> 
 									<div class="form-group">
                                         <div id="map"></div>
-                                    </div>						
+                                    </div>
 								</div>
 								<div class="col-sm-6">
 									<div class="form-group">
 										<label>Date</label><small>(required)</small>
-                                        <input type="text" name="daterange" id="daterange" class="form-control-event"/>
+                                        <input required type="text" name="daterange" id="daterange" class="form-control-event"/>
+										<label><small id="prompt"></small></label>
                                     </div>
 									<div class="form-group">
-                                        <label>Materials To Bring<small>(equipments to bring)</small></label>
-                                        <textarea rows ="5" name="event_material_req" type="text" id="event_material_req" class="form-control"></textarea>
+                                        <label>Materials To Bring<small> (equipments to bring)</small></label>
+                                        <textarea rows ="5" name="event_material_req" type="text" id="event_material_req" class="form-control" required></textarea>
                                     </div>
 									<div class="form-group">
-                                        <label>Age Requirement <small>(required)</small></label>
-                                        <input name="event_age_req" type="number" id="event_age_req" class="form-control-event">
+                                        <label>No. of Needed Volunteers:<small> (required)</small></label>
+                                        <input name="num_vol" type="number" id="num_vol" class="form-control-event" required">
+										
+										
+										<label>Age Requirement<small> ("example: 16-20 years" or "no age requirement")</small></label>
+                                        <input name="event_age_req" type="text" id="event_age_req" class="form-control-event" required">
                                     
-                                        <label>Gender Requirement<small>(required)</small></label>
-                                        <select name="event_gender_req" class="form-control-event">
+                                        <label>Gender Requirement<small> (required)</small></label>
+                                        <select name="event_gender_req" class="form-control-event" required>
 											<option></option>
 										  <option value="Female">Female</option>
 										  <option value="Male">Male</option>
 										  <option value="Both(Female/Male)">Both(Female/Male)</option>
 										</select>
                                     </div>
-									<div id="container">
-										  Occupation Name:<input name="occupation_name[]" type="text" id="occupation_name" class="form-control-event">
-										  No. of Volunteers:<input name="no_volunteer[]" type="number" id="no_volunteer" class="form-control-event">
-										  <a href="#" id="add">Add</a>
+									<div class="col-sm-6">
+										<label>Specific Details About Your Needed Volunteers<small> (optional)</small></label>
+										<div id="container">
+											  Occupation Name:<input name="occupation_name[]" type="text" id="occupation_name" class="form-control-event">
+											  No. of Volunteers:<input name="no_volunteer[]" type="number" id="no_volunteer" class="form-control-event">
+											  <a href="#" id="add">Add</a>
+										</div>
+										<br>
+										<div id="partnership">
+											   Partnership with Other Organization/s:
+											   <select name='partnership[]' class="form-control-event">
+													<option></option>
+													<?php
+														while ($org_row = mysqli_fetch_array($org_data)){
+															echo "<option>".$org_row['organization_name']."</option>";
+														}
+													?>
+												</select>
+												 <a href="#" id="addPartnership">Add</a>
+										</div>
 									</div>
-									<br>
-									<div id="partnership">
-										   Partnership with Other Organization/s:
-										   <select name='partnership[]' class="form-control-event">
-												<option></option>
-												<?php
-													while ($org_row = mysqli_fetch_array($org_data)){
-														echo "<option>".$org_row['organization_name']."</option>";
-													}
-												?>
-											</select>
-											 <a href="#" id="addPartnership">Add</a>
-									</div>
-								</div>	
+
+								</div>
+								<div class='col-sm-12'>
+									<div class="form-group">
+                                      <h4 class="info-text">Select an Advocacy for this Event</h4>
+										<div class="row">  
+											<div class="col-sm-12">
+												<div class="form-group">
+													<?php
+														while ($row = mysqli_fetch_array($dispAdv_data)){
+														$advicon = $row['advocacy_icon'];
+														$img_src = "../admin/advocaciesIcon/".$advicon;
+															echo '<div class="col-sm-6 checkbox">';
+															echo "<img src='".$img_src."' class='advicon'>";
+															echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_id']."'> ".$row['advocacy_name']."<br>";
+															echo '</div>';
+													  }				  
+													?>
+												</div>
+											</div>
+										</div>
+								</div>
+								</div>
                                 </div>
 								
                                 <div class="col-sm-10 col-sm-offset-1">
-                                    <input type='submit' class='btn btn-finish btn-primary pull-right' name='submit' value='Submit' />
+                                    <input type='submit' class='btn btn-finish btn-primary pull-right' name='submit' value='Submit' id='submit'/>
                                 </div>
                                 
                             </div>
@@ -136,22 +168,16 @@ $id = $_SESSION['num'];
 $(document).ready(function(){
 	
 	//check date
-		$("#daterange").blur(function(){
+		var x = $("#daterange").blur(function(){
 			var date = $(this).val();
+			console.log(date);
 			var x = $.ajax({
 				url: "checkDate.php",
 				method: "POST",
-				data: {date:date},
+				data: {event_start:date},
 				dataType: "json",
 				success: function(resp){
-					$("#prompt").html(resp[0]);
-					if (resp[1] == "no"){
-						$("#next").click(function(event){
-						$("#next").prop('disabled', true);
-						});
-					}else{
-						$("#next").prop('disabled', false);
-					}
+					alert(resp);
 				}
 			});
 			console.log(x);
@@ -184,9 +210,7 @@ $(document).ready(function(){
 	  e.preventDefault();
     $(this).parent("div").remove();
   });
-
 // ADD PARTNERSHIP
-
   $("#addPartnership").click(function(e){
 	e.preventDefault();
     fetch();
@@ -197,16 +221,15 @@ $(document).ready(function(){
     $(this).parent("div").remove();
   });
 });
-
 function fetch(){
 	var orgList = "<div id='partnership'>Partnership with Other Organization/s:<select name='partnership[]' class='form-control-event'><option></option>";
-		$.ajax({
+		var x = $.ajax({
 			url: "displayListOrg.php",
 			method: "POST",
 			dataType: "json",
 			success: function(retval){
 				for (var i = 0; i<retval.length; i++){
-					 orgList +="<option>"+retval[i].organization_name+"</option>";
+					 orgList +="<option>"+retval[i].first_name+"</option>";
 					
 					
 				}
@@ -214,8 +237,8 @@ function fetch(){
 				$("#partnership").append(orgList);
 			}
 		})
+		console.log(x);
 	}
-
 //google search API
 function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -235,16 +258,13 @@ function initAutocomplete() {
 		var markers = [];
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
-
           if (places.length == 0) {
             return;
           }
-
           markers.forEach(function(marker) {
             marker.setMap(null);
           });
           markers = [];
-
           var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
             if (!place.geometry) {
@@ -262,9 +282,7 @@ function initAutocomplete() {
               title: place.name,
               position: place.geometry.location
             }));
-
             if (place.geometry.viewport) {
-
               bounds.union(place.geometry.viewport);
             } else {
               bounds.extend(place.geometry.location);
@@ -273,7 +291,6 @@ function initAutocomplete() {
           map.fitBounds(bounds);
         });
       }
-
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgEyPsYueUh9jVTH4aXp0H3sDUGQz0rRM&libraries=places&callback=initAutocomplete" async defer></script>
 	</script>

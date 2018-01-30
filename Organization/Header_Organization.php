@@ -75,13 +75,7 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt=""></a>
+                <a class="navbar-brand" href="organization_dashboard.php"><img src="../assets/img/iHelplogo.png" height="48px" width="149px" alt=""></a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -109,9 +103,9 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
                                 <li>
                                     <a href="editOrganizationProfile.php">Edit Profile</a>
                                 </li>
-                                <li>
-                                    <a href="index-3.html">View Reports</a>
-                                </li>
+                                <!--<li>
+                                    WALA SA FOR NOW<a href="index-3.html">View Reports</a>
+                                </li>-->
                                 <li>
                                     <a href="../index.php">Log Out</a>
                                 </li>

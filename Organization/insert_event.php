@@ -9,9 +9,9 @@ $org_data = mysqli_query ($sql, $org_query);
 if ($org_data){
 	$org_row = mysqli_fetch_array($org_data);
 	$first_name = $org_row['first_name'];
-	echo $first_name;
+	
 }
-echo $org_query;
+//echo $org_query;
 
 
 //add image
@@ -55,35 +55,46 @@ $addevent_query ="INSERT INTO event VALUES ('',
                                    '$id',
 								   '".$sql->real_escape_string($first_name)."',
 								   'Upcoming',
-								   '40',	
+								   ".$_POST['num_vol'].",
+									0,
 								   NOW()
                                   )";
 
 
 $addevent_data = mysqli_query ($sql, $addevent_query);
+$d_id = mysqli_insert_id($sql);
    if ($addevent_data)
    {
-    // daphne code
-   $occupationName = $_POST["occupation_name"];
-   $noVolunteers = $_POST["no_volunteer"];
-   $d_id = mysqli_insert_id($sql);
-   foreach ($occupationName AS $key => $value ){
-     $addocc_query = "INSERT INTO occupation_event VALUES ('',
-                                           '$d_id',
-                                           '$id',
-                                          '".$sql->real_escape_string($value)."',
-                                          '".$sql->real_escape_string($noVolunteers[$key])."')";
 
-   $addocc_data = mysqli_query($sql, $addocc_query);
-     if ($addocc_data){
-		header("location: organization_dashboard.php");
-		echo "<p>Stored to database</p>";
-     }
-     else{
-       
-     }
+	//insert to event_adv table
+	foreach($_POST['advocacy'] as $advocacy){
+		$adv_query = "INSERT INTO event_advocacy VALUES ('', ".$d_id.", ".$advocacy.")";
+		$adv_data = mysqli_query($sql, $adv_query);
+	}
+	if ($adv_data){
+		//daphne code
+	   $occupationName = $_POST["occupation_name"];
+	   $noVolunteers = $_POST["no_volunteer"];
+	   $d_id = mysqli_insert_id($sql);
+	   foreach ($occupationName AS $key => $value ){
+		 $addocc_query = "INSERT INTO occupation_event VALUES ('',
+											   '$d_id',
+											   '$id',
+											  '".$sql->real_escape_string($value)."',
+											  '".$sql->real_escape_string($noVolunteers[$key])."')";
 
-   }
+	   $addocc_data = mysqli_query($sql, $addocc_query);
+		 if ($addocc_data){
+			header("location: organization_dashboard.php");
+			echo "<p>Stored to database</p>";
+		 }
+		 else{
+		   
+		 }
+
+	   }
+	}
+    
 
     
 
@@ -91,6 +102,6 @@ $addevent_data = mysqli_query ($sql, $addevent_query);
    else {
     echo $sql->error."<br>";
  }
-
+header("location: organization_dashboard.php");
  move_uploaded_file($_FILES['eventImage']['tmp_name'], $target_dir.$file);
 ?>

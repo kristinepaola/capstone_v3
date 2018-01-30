@@ -29,7 +29,7 @@
 	
 	if($result){
 		move_uploaded_file($_FILES['resources_photo']['tmp_name'], $target_dir.$name);
-		
+		header("location:volunteerHome.php");
 	}else{
 		echo "ERROR IN QUERY";
 	}

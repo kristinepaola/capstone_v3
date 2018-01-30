@@ -41,13 +41,9 @@ require ("../sql_connect.php");
       <div class="container">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
-
+               <div class="navbar-header">
+                <a class="navbar-brand" href="nameTitle.php"><img src="../assets/img/iHelplogo.png" height="48px" width="149px" alt=""></a>
+            </div>
           </div>
 
               <div class="collapse navbar-collapse yamm" id="navigation">
@@ -73,7 +69,7 @@ require ("../sql_connect.php");
               <b class="caret"></b></a>
                             <ul class="dropdown-menu navbar-nav">
                                 <li>
-                                    <a href="volunteerProfile.php?<?php echo $id; ?>">My Profile</a>
+                                    <a href="volunteerProfile_1.php?<?php echo $id; ?>">My Profile</a>
                                 </li>
 								<li>
                                     <a href="editProfile.php">Edit Profile</a>
@@ -81,9 +77,9 @@ require ("../sql_connect.php");
 								<li>
                                     <a href="#">Volunteered Resources</a>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <a href="#">View Reports</a>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="../logout.php">Log Out</a>
                                 </li>

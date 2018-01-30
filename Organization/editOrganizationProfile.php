@@ -35,7 +35,6 @@
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1 profiel-container">
                       <fieldset>
-                        <form action="update_organization_profile.php" method="POST" enctype="multipart/form-data">
                             <div class="profiel-header">
                                 <h3>
                                     <b>EDIT</b> YOUR PROFILE <br>
@@ -48,34 +47,36 @@
                                 <div class="col-sm-3 col-sm-offset-1">
                                     <div class="picture-container">
                                         <div class="picture">
-                                            <label>Organization Profile:<small>(required)</small></label>
+										<form method="POST" action="updateProfPic.php" enctype="multipart/form-data">
+										   <label>Organization Profile:<small></small></label>
                                             <input name="user_prof_pic" type ="file" id ="user_prof_pic" >
 											<?php echo "<img src=../admin/userProfPic/".$prof_row['user_prof_pic'].">";?>
-                                        </div>
-                                        <h6>Choose Picture</h6>
+											<button>Update Profile Picture</button>										
+										</form>
+										</div>
                                     </div>
                                 </div>
-
+<form action="update_organization_profile.php" method="POST" enctype="multipart/form-data">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Organization Name:<small>(required)</small></label>
+                                        <label>Organization Name:<small></small></label>
                                         <input name="organization_name" type="text" class="form-control" id ="organization_name" value ="<?php echo $row['organization_name'];?>">
                                     </div>
                                     <div class="form-group">
-                                        <label>Organization Mission:<small>(required)</small></label>
-                                        <input name="organization_mission" type ="text" id ="oranization_mission" value ="<?php echo $row['organization_mission'];?>">
+                                        <label>Organization Mission:<small></small></label>
+                                        <input name="organization_mission" type ="text" class="form-control" id ="oranization_mission" value ="<?php echo $row['organization_mission'];?>">
                                     </div> 
                                     <div class="form-group">
-                                        <label>Organization Vision: <small>(required)</small></label>
-                                        <input name="organization_vision" type ="text" id ="organization_vission" value ="<?php echo $row['organization_vision'];?>">
+                                        <label>Organization Vision: <small></small></label>
+                                        <input name="organization_vision" type ="text" class="form-control" id ="organization_vission" value ="<?php echo $row['organization_vision'];?>">
                                     </div> 
                                     <div class="form-group">
-                                        <label>Organization Date Established:<small>(required)</small></label>
-                                        <input name="organization_date_established" type ="date" id ="organization_date_established" value ="<?php echo $row['organization_date_established'];?>">
+                                        <label>Organization Date Established:<small></small></label>
+                                        <input name="organization_date_established" class="form-control" type ="date" id ="organization_date_established" value ="<?php echo $row['organization_date_established'];?>">
                                     </div> 
                                     <div class="form-group">
-                                        <label>Organization Certificate:<small>(required)</small></label>
-                                        <input name="organization_certificate" type ="file" id ="organization_certificate" value ="<?php echo $row['organization_certificate'];?>">
+                                        <label>Organization Certificate:<small></small></label>
+                                        <input name="organization_certificate" class="form-control" type ="file" id ="organization_certificate" value ="<?php echo $row['organization_certificate'];?>">
                                     </div> 
 
                                 </div>   

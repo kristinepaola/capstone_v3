@@ -5,7 +5,7 @@ include("../sql_connect.php");
 $page = isset($_GET['p'])? $_GET['p'] : '' ;
 
 if($page =='view'){
-	$result = "SELECT A.user_id, A.user_status, B.organization_name
+	$result = "SELECT A.user_id, A.user_status, A.timestamp, B.organization_name, B.organization_mission, B.organization_vision, B.organization_date_established, B.organization_status
                       FROM user A, organization_details B
                       WHERE A.user_id = B.user_id AND A.user_type = 'organization'";
 
@@ -14,9 +14,13 @@ if($page =='view'){
                      while($row = mysqli_fetch_array($info)){
                      	?>	
                      		<tr>
-                     			<td><?php echo $row[0] ?></td>
-                     			<td><?php echo $row[2] ?></td>
-                     			<td><?php echo $row[1] ?></td>
+                     			<td><?php echo $row[0] ?></td><!--ID-->
+                     			<td><?php echo $row[3] ?></td><!--Org Name-->
+                          <td><?php echo $row[4] ?></td><!--Mission-->
+                          <td><?php echo $row[5] ?></td><!--Vision-->
+                          <td><?php echo $row[6] ?></td><!--Vision-->
+                          <td><?php echo $row[7] ?></td><!--Status-->
+                     			<td><?php echo $row[2] ?></td><!--Date Registered-->
                      		</tr>
                      	<?php
                      }
