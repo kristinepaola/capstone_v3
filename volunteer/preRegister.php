@@ -25,8 +25,6 @@ $check_row = mysqli_fetch_array($check_data);
 $user_query = "INSERT INTO event_preregistration VALUES ('',
 												$event_id,
 												$user_id,
-												'$first_name',
-												'$last_name',
 												NOW())";
 
 $user_data = mysqli_query($sql,$user_query);

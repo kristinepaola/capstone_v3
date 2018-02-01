@@ -10,7 +10,7 @@ if (!$data){
     exit();
 }
 $row = mysqli_fetch_array($data);
-$user_prof_pic = $row[13];
+$user_prof_pic = $row['user_prof_pic'];
 
 $user_query = "SELECT * FROM organization_details where user_id = ".$id."";
 
@@ -71,9 +71,8 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
 		
     </head>
     <body>
-        <nav class="navbar navbar-default ">
+        <nav class="navbar navbar-default">
             <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
                         <span class="sr-only">Toggle navigation</span>
@@ -81,12 +80,13 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt=""></a>
+                    <a class="navbar-brand" href=""><img src="assets/img/ihelplogo.png" height ="48 px" width ="149" alt=""></a> 
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse yamm" id="navigation">
                     <ul class="main-nav nav navbar-nav navbar-right">
+
                         <li class="wow fadeInDown" data-wow-delay="0.1s"><a class="organization_dashboard" href="organization_dashboard.php">Home</a></li>
                         <li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="events.php">Event</a></li>
 						<li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="organizations.php">Organization</a></li>
@@ -109,9 +109,9 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
                                 <li>
                                     <a href="editOrganizationProfile.php">Edit Profile</a>
                                 </li>
-                                <li>
-                                    <a href="index-3.html">View Reports</a>
-                                </li>
+                                <!--<li>
+                                    WALA SA FOR NOW<a href="index-3.html">View Reports</a>
+                                </li>-->
                                 <li>
                                     <a href="../index.php">Log Out</a>
                                 </li>

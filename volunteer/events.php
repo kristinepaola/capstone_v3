@@ -1,11 +1,29 @@
 <?php
 	require ("../sql_connect.php");
 	include ("nameTitle.php");
-	$query = "SELECT * FROM event WHERE status = ''";
+
+	$result_per_page = 5;
+	$query = "SELECT * FROM event ";
 	$data = mysqli_query($sql,$query);
+ 	$number_Result = mysqli_num_rows($data);
 	if (!$data){
 		echo "ERROR IN QUERY";
 	}
+
+        $numberPage = ceil($number_Result/$result_per_page);
+
+     if(!isset($_GET['page'])) {
+        $page = 1;
+     }else{
+        $page = $_GET['page'];
+     }
+    
+    $page_first_result = ($page-1)*$result_per_page;
+
+     $page_query = "SELECT * FROM event LIMIT ".$page_first_result.", ".$result_per_page."";
+     $page_data = mysqli_query($sql, $page_query);
+
+	
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -16,6 +34,25 @@
 <body>
 	<head>
 		<title>iHelp | Events</title>
+		<style>
+        .pagination {
+            display: inline-block;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 2px 18px;
+            text-decoration: roboto;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {background-color: #ffde4c;}
+        </style>   
 	</head>
  <div class="page-head"> 
             <div class="container">
@@ -25,7 +62,6 @@
                     </div>
                 </div>
             </div>
-			
         </div>
         <!-- End page header -->
 
@@ -33,35 +69,11 @@
         <div class="content-area recent-property" style="background-color: #FFF;">
             <div class="container">   
                 <div class="row">
+
                     <div class="col-md-9 pr-30 padding-top-40 properties-page user-properties">
 
                         <div class="section"> 
                             <div class="page-subheader sorting pl0 pr-10">
-
-
-                                <ul class="sort-by-list pull-left">
-                                    <li class="active">
-                                        <a href="javascript:void(0);" class="order_by_date" data-orderby="property_date" data-order="ASC">
-                                            Sort by Date <i class="fa fa-sort-amount-asc"></i>					
-                                        </a>
-                                    </li>
-                                </ul><!--/ .sort-by-list-->
-
-                                <div class="items-per-page pull-right">
-                                    <label for="items_per_page"><b>Property per page :</b></label>
-                                    <div class="sel">
-                                        <select id="items_per_page" name="per_page">
-                                            <option value="3">3</option>
-                                            <option value="6">6</option>
-                                            <option value="9">9</option>
-                                            <option selected="selected" value="12">12</option>
-                                            <option value="15">15</option>
-                                            <option value="30">30</option>
-                                            <option value="45">45</option>
-                                            <option value="60">60</option>
-                                        </select>
-                                    </div><!--/ .sel-->
-                                </div><!--/ .items-per-page-->
                             </div>
 
                         </div>
@@ -69,7 +81,19 @@
                         <div class="section"> 
                             <div id="list-type" class="proerty-th-list">
                                 <?php 
-									while($row = mysqli_fetch_array($data)){
+                                echo '<div class="pagination pull-right">
+                                        <a href="events.php?page='.($page-1).'">&laquo;</a>
+                                        <a href for ($page=1; $page<=$numberPage; $page++)   
+                                    echo <a href="events.php?page='. $page .'">'.$page.'</a>
+                                       <a href="events.php?page='.($page+1).'">&raquo;</a>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-6">
+                                        <input type="text" class="form-control" placeholder="search for organizations" id="txtSearch" onKeyUp="txtSearch_submit()">
+
+                                      </div>
+                                      <div id="suggestion"></div>';
+                                      echo '<div id="lists">'; 
+									while($row = mysqli_fetch_array($page_data)){
 										$event_image = $row['event_img'];
 										$img_src = "../admin/eventImages/".$event_image;
 										echo '	<div class="col-md-4 p0">
@@ -83,13 +107,9 @@
 															<span class="pull-left"><b>Location :</b> '.$row['event_location'].' </span>
 															<span class="proerty-price pull-right">'.date("M d Y h:i A", strtotime($row['event_start'])).'</span>
 															<p style="display: none;">'.$row['event_description'].'.</p>
-															<div>
+															<div class="property-icon">
 																<button class="btn btn-warning view" data-target='.$row['event_id'].'>VIEW </button> 
-																<button id = '.$row['event_id'].' class="btn btn-success prereg" data-target='.$row['event_id'].'>Pre Register </button> 
 																
-															</div>
-															<div id="alert'.$row['event_id'].'" class="alert alert-danger red">
-																<span>You are already pre-registered in this event</span>.
 															</div>
 														</div>
 													</div>
@@ -101,21 +121,6 @@
 								?>
                           
                             </div>
-                        </div>
-
-                        <div class="section"> 
-                            <div class="pull-right">
-                                <div class="pagination">
-                                    <ul>
-                                        <li><a href="#">Prev</a></li>
-                                        <li><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
-                            </div>                
                         </div>
 
                     </div>       
@@ -142,6 +147,7 @@
 							<h6>HOW TO GET THERE</h6>
 						</div>
 						<div class="col-xs-6">
+							<h6>DESCRIPTION</h6>
 							<p id="event_description"></p>
 							<h6>WHEN</h6>
 							<p id="event_start"></p>
@@ -153,6 +159,7 @@
 					</div> 
 				  </div>
 				  <div class="modal-footer">
+					
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				  </div>
 				</div>
@@ -160,46 +167,63 @@
 			  </div>
 			</div>
 			<!-- END OF READ MORE MODAL -->
-			
-			
-			<!-- END OF ALERT MODAL -->
-			<div id="alert" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-sm">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Congratulations!</h4>
-					</div>
-					<div class="modal-body">
-						<center><strong class="text-success">You are successuly pre-registered to this event.</strong></center>
-						
-					</div> 
-				  </div>
-				</div>
-			  </div>
-			</div>
-			<!-- END OF ALERT MODAL -->
 </body>
 </html>
-<script src='../fullcalendar/lib/moment.min.js'></script>
+<script src='fullcalendar/lib/moment.min.js'></script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/typeahead.min.js"></script>
+
 <script>
-$(document).ready(function(){
-	$(".red").hide();
-	disableButton();
-	$(".view").click(function(){
-		var event_id = $(this).data("target");
-		viewEvent(event_id);
-	});
-	$(".prereg").click(function(){
-		var event_id = $(this).data("target");
+	function txtSearch_submit()
+  {
+    var search = document.getElementById("txtSearch").value;
+    var xhr;
+    if(window.XMLHttpRequest){
+        xhr = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    var data = "key=" + search;
+    xhr.open("POST", "search_events.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send(data);
+    xhr.onreadystatechange = display_data;
+
+    function display_data()
+    {
+        if(xhr.readyState ==4)
+        {
+            if(xhr.status == 200)
+            {
+                document.getElementById("suggestion").innerHTML = xhr.responseText;
+                document.getElementById("lists").style.display = 'none';
+            }
+            else
+            {
+                alert('There was a problem with the request.')
+            }
+        }
+    }
+  }
+	$(document).ready(function(){
+	
 		
-		preRegister(event_id);
-	});
+		$(".view").click(function(){
+			var event_id = $(this).data("target");
+			fetchData(event_id);
+		});
+		
+	
+	
+
 });
 
-function viewEvent(event_id){
-		$.ajax({
-			url:"../Organization/getEvent.php",
+function fetchData (event_id){
+	
+	$.ajax({
+			url:"Organization/getEvent.php",
 			method: "GET",
 			data:{
 				cid:event_id
@@ -214,7 +238,7 @@ function viewEvent(event_id){
 				$("#event_material_req").html("");
 				$("#event_occupation").html("");
 				
-				event_img = "../admin/eventImages/"+retval[0].event_img;
+				event_img = "admin/eventImages/"+retval[0].event_img;
 				event_id = retval[0].event_id;
 				event_name = retval[0].event_name;
 				event_description = retval[0].event_description;
@@ -230,55 +254,28 @@ function viewEvent(event_id){
 				$("#event_material_req").append(event_material_req);
 				$("#readmore").modal("show");
 				
-				//prereg(event_id);
+				prereg(event_id);
+
 			}
 				
 		});
 }
-function preRegister(event_id){
-	var x = $.ajax({
-		url: "preRegister.php",
-		method: "GET",
-		data: {id:event_id},
-		dataType: "json",
-		success: function(retval){	
-			$("#alert").modal("show");
-			check(event_id);
-		}
-	});
-	console.log(x);
-}
-function check(event_id){
-	var x = $.ajax({
-		url: "checkPreReg.php",
-		method: "GET",
-		data: {id:event_id},
-		dataType: "json",
-		success: function (retval){
-			var id = retval[1];
-			$("#"+id+"").hide();
-			$("#alert"+id+"").show();
-			$("#notif").show();
-		}
-	});
-}
-function disableButton(){
-	var x = $.ajax({
-		url: "checkAllPreReg.php",
-		method: "GET",
-		//data: {id:event_id},
-		dataType: "json",
-		success: function (retval){
-				
-				for(var i=0; i<retval.length; i++){
-					 $("#"+retval[i].event_id+"").hide();
-					 $("#alert"+retval[i].event_id+"").show();
-					 
-				}
-		}
-	});
-	console.log(x);
-}
 
+function fetchDataReg(event_id){
+	$.ajax({
+			url:"volunteer/preRegister.php",
+			method: "GET",
+			data:{
+				cid:event_id
+			},
+			dataType: "json",
+
+			success:function(retval){
+				$(".prereg").attr("disabled", true);
+
+			}
+	});
+}
+	
 
 </script>

@@ -1,20 +1,24 @@
 <?php
-require('../sql_connect.php');
-$query = "SELECT user_name FROM user WHERE user_name = '".$_POST['check_mail']."'";
+session_start();
+require("../sql_connect.php");
+$id = $_SESSION['num'];
+$event_start = $_POST['event_start'];
+
+//explode date-time 
+$exp = explode(" - ", $event_start);
+$start = date("Y-m-d H:i:s", strtotime($exp[0]));
+
+
+$query = "SELECT event_start FROM event WHERE user_id = '$id'";
 $data = mysqli_query($sql, $query);
-$cnt = mysqli_num_rows($data);
 
-
-
-if ($cnt!=0){
-	$msg = "<small class='text-danger'>This email address already exists</small>";
-	$stat = "no";
-	$ret = array ($msg, $stat);
-}else{
-	$msg = "<small class='text-success'>This email address is available</small>";
-	$stat = "yes";
-	$ret = array ($msg, $stat);
+while ($row=mysqli_fetch_array($data)){
+	$date = $row['event_start'];
+	if ($start == $exp[0]){
+		$alert="Cannot create an event with the same date and time";
+		$resp = array($alert);
+	}
 }
 
-echo json_encode($ret);
+echo json_encode($resp);
 ?>

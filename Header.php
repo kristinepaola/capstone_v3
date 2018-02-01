@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html class="no-js">
   <head>
@@ -9,7 +10,7 @@
     <meta name="keyword" content="html5, css, bootstrap, property, real-estate theme , bootstrap template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis .com/css?family=Open+Sans:400,300,700,800' rel='stylesheet' type='text/css'>
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/icheck.min_all.css">
     <link rel="stylesheet" href="assets/css/price-range.css">
-    <link rel="stylesheet" href="assets/css/owl.carousel.css">
+    <link rel="styletylesheet" href="assets/css/owl.carousel.css">
     <link rel="stylesheet" href="assets/css/owl.theme.css">
     <link rel="stylesheet" href="assets/css/owl.transitions.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -52,7 +53,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt=""></a>
+                <a class="navbar-brand" href="index.html"><img src="assets/img/ihelplogo.png" height ="48 px" width ="149" alt=""></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -114,6 +115,8 @@
 <script src="assets/js/price-range.js"></script>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/typeahead.min.js"></script>
+<script src="assets/js/jquery.min.js"></script>
 
 <script>
 	$(document).ready(function(){

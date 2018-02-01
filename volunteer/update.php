@@ -50,7 +50,7 @@ if ($result){
 		if (!$det_result){
 			echo "problem inserting to volunteer_details";
 		}else{
-			header("location:volunteerProfile.php");
+			header("location:volunteerProfile_1.php");
 		} 
 	}
 else{

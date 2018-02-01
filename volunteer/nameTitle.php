@@ -8,7 +8,7 @@ require ("../sql_connect.php");
     echo "error";
   }
   $row = mysqli_fetch_array($data);
-  $volunteer_img = $row[13];
+  $volunteer_img = $row['user_prof_pic'];
   $img_src = "../admin/userProfPic/".$volunteer_img;
 
 	
@@ -73,7 +73,7 @@ require ("../sql_connect.php");
               <b class="caret"></b></a>
                             <ul class="dropdown-menu navbar-nav">
                                 <li>
-                                    <a href="volunteerProfile.php?<?php echo $id; ?>">My Profile</a>
+                                    <a href="volunteerProfile_1.php?<?php echo $id; ?>">My Profile</a>
                                 </li>
 								<li>
                                     <a href="editProfile.php">Edit Profile</a>
@@ -81,9 +81,9 @@ require ("../sql_connect.php");
 								<li>
                                     <a href="#">Volunteered Resources</a>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <a href="#">View Reports</a>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="../logout.php">Log Out</a>
                                 </li>

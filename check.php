@@ -1,3 +1,4 @@
+
 <html>
 
 <head><title>Checking...</title></head>
@@ -8,7 +9,7 @@ include('sql_connect.php');
 
 $id = $_POST['id'];
 
-$result = mysqli_query($sql,"SELECT * FROM user WHERE user_name='".$id[0]."' AND user_password = '".$id[1]."'")
+$result = mysqli_query($sql,"SELECT * FROM user WHERE user_name='".$id[0]."' AND user_password = md5('".$id[1]."')")
 or die(mysqli_error($sql));
 $result = mysqli_fetch_array($result);
 if($result){
@@ -22,7 +23,7 @@ if($result){
     }else if($_SESSION['identifier'] == 'organization'){
       header('location:Organization/organization_dashboard.php');
     }else{
-      header('location:admin_dashboard.php');
+      header('location:admin/admin_dashboard.php');
     }
 }else{
     $_SESSION['notThere'] = 1;

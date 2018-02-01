@@ -96,7 +96,6 @@ include("Header.php");
                             <p>
                             <a class="login-social" href="#"><i class="fa fa-facebook"></i>&nbsp;Facebook</a>
                             <a class="login-social" href="#"><i class="fa fa-google-plus"></i>&nbsp;Gmail</a>
-                            <a class="login-social" href="#"><i class="fa fa-twitter"></i>&nbsp;Twitter</a>
                             </p>
                         </div>
 

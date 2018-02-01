@@ -1,0 +1,5 @@
+Database Changes:
+	Event -> Event_Status (Enum: Pending, Approved, Rejected)
+	Organization Details -> Organization_Status(Enum: Pending, Approved, Rejected)
+
+

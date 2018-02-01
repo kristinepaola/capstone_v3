@@ -23,7 +23,7 @@
 	<div class="slider">
 		<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
 
-			<div class="item"><img src="assets/img/capstone/index-1.gif" alt="Connect with communities"></div>
+			<!-- <div class="item"><img src="assets/img/capstone/index-1.gif" alt="Connect with communities"></div> -->
 		</div>
 	</div>
 	
