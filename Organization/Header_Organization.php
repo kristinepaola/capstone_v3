@@ -1,7 +1,17 @@
 <?php
 session_start();
+if(empty($_SESSION['num'])){
+	header('location:../index.php');
+}
+
+
 include('../sql_connect.php');
 $id = $_SESSION['num'];
+
+$totalCount = 0;
+$followCount = 0;
+$preRegCount = 0;
+
 
 $query = "SELECT * FROM user where user_id = ".$id."";
 $data = mysqli_query ($sql, $query);
@@ -21,6 +31,16 @@ if (!$user_data){
 }
 $user_row = mysqli_fetch_array($user_data);
 $img_src = "../admin/userProfPic/".$user_prof_pic;
+
+$sql2="SELECT * FROM follow WHERE notif_status = 'unseen' AND org_id = ".$id."";
+$result=mysqli_query($sql, $sql2);
+$followCount=mysqli_num_rows($result);
+
+$sql3 ="SELECT * FROM event_preregistration WHERE notif_status = 'unseen' AND user_id = ".$id."";
+$result3=mysqli_query($sql, $sql3);
+$preRegCount=mysqli_num_rows($result3);
+
+$totalCount = $followCount + $preRegCount;
 
 ?>
 <!DOCTYPE html>
@@ -57,38 +77,100 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
 		<link rel="stylesheet" href="../assets/css/owl.theme.css">
 		<link rel="stylesheet" href="../assets/css/owl.transitions.css">
 		<link rel="stylesheet" href="../assets/css/style.css">
-		
 		<link rel="stylesheet" href="../assets/css/responsive.css">
-		
 		<link rel="stylesheet" href="../assets/css/webportal.css">
-		
-		
-		<!-- date range picker -->
 		<link rel="stylesheet" href="../daterangepicker/daterangepicker.css">
-		
-		
-
-		
+        
+        <style>
+      #navno{list-style:none;margin: 0px;padding: 0px;}
+      #navno li {
+        /*margin-right: 20px;*/
+        font-family: Roboto;
+        font-size: 20px;
+        font-weight:bold;
+      }
+      #navno li a{color:#333333;text-decoration:none}
+      #navno li a:hover{color:#000000;text-decoration:none}
+      #notification_li
+      {
+        position:relative
+      }
+      #notificationContainer 
+      {
+      background-color: #fff;
+      border: 1px solid rgba(100, 100, 100, .4);
+      -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+      overflow: visible;
+      position: absolute;
+      top: 50px;
+      margin-left: -170px;
+      width: 300px;
+      z-index: 1;
+      display: none;
+      }
+      #notificationTitle
+      {
+      font-weight: bold;
+      padding: 8px;
+      font-size: 13px;
+      background-color: #ffffff;
+      position: fixed;
+      z-index: 1000;
+      width: 300px;
+      border-bottom: 1px solid #dddddd;
+      }
+      #notificationsBody
+      {
+      padding: 8px 0px 0px 0px !important;
+      min-height:30px;
+      }
+      #notificationFooter
+      {
+      background-color: #e9eaed;
+      text-align: center;
+      font-weight: bold;
+      padding: 8px;
+      font-size: 12px;
+      border-top: 1px solid #dddddd;
+      }
+    #notification_count 
+    {
+    padding: 3px 7px 3px 7px;
+    background: #cc0000;
+    color: #ffffff;
+    font-weight: bold;
+    margin-left: 77px;
+    border-radius: 9px;
+    -moz-border-radius: 9px; 
+    -webkit-border-radius: 9px;
+    position: absolute;
+    margin-top: -11px;
+    font-size: 11px;
+    }
+</style>
     </head>
     <body>
         <nav class="navbar navbar-default ">
             <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                <a class="navbar-brand" href="organization_dashboard.php"><img src="../assets/img/ihelp.png" height="38 px" width="149px" alt=""></a>
+                <a class="navbar-brand" href="organization_dashboard.php"><img src="../assets/img/iHelplogo.png" height="48px" width="149px" alt=""></a>
                 </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse yamm" id="navigation">
                     <ul class="main-nav nav navbar-nav navbar-right">
                         <li class="wow fadeInDown" data-wow-delay="0.1s"><a class="organization_dashboard" href="organization_dashboard.php">Home</a></li>
                         <li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="events.php">Event</a></li>
-						<li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="organizations.php">Organization</a></li>
-						
-						
-						
-						<li class="dropdown ymm-sw" data-wow-delay="0.1s">
-                            <a href="organization_profile.php" data-toggle="dropdown" data-hover="dropdown" 	data-delay="200">
+						<li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="organizations.php">Organization</a></li><li id="notification_li">
+                             <div id="navno">
+                                  <a href="#" id="notificationLink">Notifications</a>
+                                <span id="notification_count"><?php if($totalCount > 0) { echo $totalCount; } ?></span>
+                                <div id="notificationContainer">
+                                <div id="notificationTitle">Notifications</div>
+                                <div id="notificationsBody" class="notifications"></div>
+                              </div>
+                              </div>
+                            </li>
+						  <li class="dropdown ymm-sw" data-wow-delay="0.1s">
+                            <a href="organization_profile.php" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
 								
 								<?php 
 								echo "<img src='".$img_src."' class='prof_pic_icon'>";
@@ -97,59 +179,85 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
 
 							<b class="caret"></b></a>
                             <ul class="dropdown-menu navbar-nav">
-								 <li >
-                                    <a href="organization_profile.php?id=<?php echo $id?>" >My Profile</a>
+								 <li>
+                                    <a href="organization_profile.php?id=<?php echo $id?>">My Profile</a>
                                 </li>
                                 <li>
                                     <a href="editOrganizationProfile.php">Edit Profile</a>
                                 </li>
+                                <!--<li>
+                                    WALA SA FOR NOW<a href="index-3.html">View Reports</a>
+                                </li>-->
                                 <li>
-                                   <a href="view_report.php">View Reports</a>
-                                </li>
-                                <li>
-                                    <a href="../index.php">Log Out</a>
+                                    <a href="../logout.php">Log Out</a>
                                 </li>
                             </ul>
                         </li>
-		
-						
-						
-						
-
-						
-						
-						
                     </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                </div>
+            </div>
         </nav>
-        <!-- End of nav bar -->
     </body>
 </html>
               
 <script src="../assets/js/modernizr-2.6.2.min.js"></script>
-
 <script src="../assets/js/jquery-1.10.2.min.js"></script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 <script src="../assets/js/bootstrap-select.min.js"></script>
 <script src="../assets/js/bootstrap-hover-dropdown.js"></script>
-
 <script src="../assets/js/easypiechart.min.js"></script>
 <script src="../assets/js/jquery.easypiechart.min.js"></script>
-
 <script src="../assets/js/owl.carousel.min.js"></script>
 <script src="../assets/js/wow.js"></script>
-
 <script src="../assets/js/icheck.min.js"></script>
 <script src="../assets/js/price-range.js"></script>
-
 <script src="../assets/js/main.js"></script>
-
-
 <script src='../fullcalendar/lib/jquery.min.js'></script>
 <script src='../fullcalendar/lib/moment.min.js'></script>
 <script src='../fullcalendar/fullcalendar.min.js'></script>
 <script src='../bootstrap/js/bootstrap.min.js'></script>
-
-<!-- date range picker -->
 <script type="text/javascript" src="../daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    function myFunction() {
+                    $.ajax({
+                        url: "view_notification.php",
+                        type: "POST",
+                        processData:false,
+                        success: function(data){
+                            $("#notification_count").fadeOut("slow");                   
+                            $("#notificationsBody").show();$("#notificationsBody").html(data);
+                        },
+                        error: function(){}           
+                    });
+                 }
+                 
+                 $(document).ready(function() {
+                    $('body').click(function(e){
+                        if ( e.target.id != 'notification-icon'){
+                            $("#notification-latest").hide();
+                        }
+                    });
+                });
+ // SAMPLE
+ $("#notificationLink").click(function()
+      {
+      $("#notificationContainer").fadeToggle(300);
+      $("#notification_count").fadeOut("slow");  
+       myFunction();
+      return false;
+      });
+
+      $(document).click(function()
+      {
+      $("#notificationContainer").hide();
+      });
+
+      $("#notificationContainer").click(function()
+      {
+        return false;
+      });
+ 
+});
+</script>

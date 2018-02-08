@@ -32,7 +32,10 @@ $min_age = $_POST['age_req'][0];
 $max_age = $_POST['age_req'][1];
 
 
-
+$org = "SELECT * FROM organization_details WHERE user_id = '$id'";
+$org_data = mysqli_query($sql, $data);
+$org_row = mysqli_fetch_array($org_data);
+$org_name = $org_row['organization_name'];
 
 $addevent_query ="INSERT INTO event VALUES ('',                                           
                                   '$event_name',
@@ -120,10 +123,10 @@ while($vol_row=mysqli_fetch_array($vol_data)){
 	$mail->setFrom('webportal@gmail.com', 'iHelp');
 	$mail->addReplyTo('ihelpmail018@gmail', 'iHelp');
 
-	$mail->Subject = 'We are in need of Volunteers!';
+	$mail->Subject = ''.$org_name.' are currently looking for Volunteers!';
 	//$mail->msgHTML(file_get_contents('../org_confirmation.php'), __DIR__);
 	$mail->isHTML(true);
-	$mail->Body = 'You are invite to join <b><a href="http://localhost/capstone/capstone_v3/volunteer/invitation.php?id='.$d_id.'">'.$event_name.'</a></b>
+	$mail->Body = 'You are invited to join <b><a href="http://localhost/capstone/capstone_v3/volunteer/invitation.php?id='.$d_id.'">'.$event_name.'</a></b>
 					
 					<br>Click the link to know more about the event.';
 

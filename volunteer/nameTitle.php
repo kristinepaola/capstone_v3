@@ -2,6 +2,9 @@
   require ("../sql_connect.php");
   session_start();
   $id =  $_SESSION['num'];
+  if(empty($_SESSION['num'])){
+	header('location:../index.php');
+}
   
   $query = "SELECT * FROM user WHERE user_id = '$id'";
   $data = mysqli_query($sql, $query);

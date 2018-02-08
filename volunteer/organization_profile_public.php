@@ -19,6 +19,7 @@
   $cnt_query = "SELECT * FROM event 
           WHERE user_id = ".$id." AND event_status = 'Upcoming'
           ";
+
   $cnt_data = mysqli_query($sql, $cnt_query);
   if (!$cnt_data){
     echo "ERROR IN QUERY 4";
