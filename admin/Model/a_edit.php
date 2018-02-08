@@ -17,11 +17,15 @@ if($page =='view'){
                      			<td><?php echo $row[0] ?></td>
                      			<td><?php echo $row[4] ?></td><!--First Name-->
                      			<td><?php echo $row[6] ?></td><!--Last Name-->
+                          <td><?php echo $row[12] ?></td><!--User Status-->
+                          <td><?php echo $row[13] ?></td><!--Date Registered-->
                      			<td><?php echo $row[9] ?></td><!--Missed Activities-->
-                     			<td><?php echo $row[12] ?></td><!--User Status-->
                      		</tr>
                      	<?php
                      }
+
+// }else if($page == 'load'){
+
 
 }else{
 	header('Content-Type: application/json');

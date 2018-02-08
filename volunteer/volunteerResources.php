@@ -8,6 +8,8 @@ $event_id = $_SESSION['event_id'];
 ?>
 <html>
 <body>
+	<div class="container">
+		
 	<form action="insert_volunteerResources.php" method="post" enctype="multipart/form-data">
 		<label >Add Photo</label>
 		<input type="file" class="form-control" id="resources_photo" name="resources_photo" placeholder="Upload Image">
@@ -20,7 +22,9 @@ $event_id = $_SESSION['event_id'];
 		<div class="modal-footer">
 		
 		<input type="submit" name="submit"  value="Submit">
-	</form>							
+	</form>		
+		</div>
+	</div>
 
 </body>
 </html>

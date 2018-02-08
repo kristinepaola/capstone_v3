@@ -1,7 +1,8 @@
 <?php
-require ("../sql_connect.php");
+  require ("../sql_connect.php");
   session_start();
   $id =  $_SESSION['num'];
+  
   $query = "SELECT * FROM user WHERE user_id = '$id'";
   $data = mysqli_query($sql, $query);
   if (!$data){
@@ -16,8 +17,7 @@ require ("../sql_connect.php");
 <html>
 <head>  
    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-          <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-          <link rel="icon" href="favicon.ico" type="image/x-icon">
+          <link rel="shortcut icon" href="../assets/img/newTab.png" type="image/x-icon">
 
           <link rel="stylesheet" href="../assets/css/normalize.css">
           <link rel="stylesheet" href="../assets/css/font-awesome.min.css">
@@ -41,13 +41,9 @@ require ("../sql_connect.php");
       <div class="container">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
-
+               <div class="navbar-header">
+                <a class="navbar-brand" href="nameTitle.php"><img src="../assets/img/ihelp.png" height="48px" width="149px" alt=""></a>
+            </div>
           </div>
 
               <div class="collapse navbar-collapse yamm" id="navigation">
@@ -79,11 +75,9 @@ require ("../sql_connect.php");
                                     <a href="editProfile.php">Edit Profile</a>
                                 </li>
 								<li>
-                                    <a href="#">Volunteered Resources</a>
+                                    <a href="volunteer_report.php">View Reports</a>
                                 </li>
-                                <li>
-                                    <a href="#">View Reports</a>
-                                </li>
+                      
                                 <li>
                                     <a href="../logout.php">Log Out</a>
                                 </li>

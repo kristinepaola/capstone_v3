@@ -7,9 +7,16 @@ $recommended_query = "SELECT DISTINCT A.advocacy_name, B.advocacy_id, B.event_id
 FROM advocacies A, event_advocacy B, event C, user D, organization_details E
 WHERE A.advocacy_id = B.advocacy_id 
 AND B.event_id = C.event_id 
-AND D.user_id = 13
+AND D.user_id = 39
 AND C.user_id = E.user_id
-Group by c.event_name";
+Group by C.event_name";
+$query = "SELECT A.advocacy_name, B.advocacy_id, B.event_id, C.event_name, C.user_id, D.user_id, D.first_name, D.advocacies, E.organization_name
+FROM advocacies A, event_advocacy B, event C, user D, organization_details E
+WHERE A.advocacy_id = B.advocacy_id 
+AND B.event_id = C.event_id 
+AND D.user_id = 39
+AND C.user_id = E.user_id
+";
 $recommended_data = mysqli_query($sql, $recommended_query);
 
 echo $recommended_query."<br>";
@@ -32,7 +39,10 @@ echo $recommended_query."<br>";
 		$exp = explode (', ', $row['advocacies']);
 		$size = count($exp);
 		
+		
+		
 		for ($i=0; $i<$size; $i++){
+			
 			if ($exp[$i] == $row['advocacy_name']){
 				
 				echo $row['event_name']."<br>";

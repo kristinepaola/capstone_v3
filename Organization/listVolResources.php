@@ -3,9 +3,11 @@ require ("../sql_connect.php");
 include ("Header_Organization.php");
 $id = $_GET['cid'];
 
-$query = "SELECT * FROM volunteer_resources 
-		INNER JOIN user 
-		ON user.user_id=volunteer_resources.user_id";
+$query = "SELECT A.event_id, A.timestamp, A.resources_name, A.resources_description, A.resources_photo, A.noItems, B.first_name, B.last_name, B.user_id
+		FROM volunteer_resources A, user B
+		WHERE A.user_id = B.user_id
+		AND A.event_id = '$id'
+		";
 $data = mysqli_query($sql, $query);
 if (!$data){
 	echo "ERROR IN QUERY!";
@@ -13,10 +15,20 @@ if (!$data){
 ?>
 <html>
 <head>
+	<style>
+		.img{
+		height: 50px;
+		width: 50px
+		}
+	</style>
 </head>
 <body>
 <div class="container">
 	<div class='table-responsive'>
+		<div class="col-sm-6 col-lg-6">
+			<input type="text" class="form-control" placeholder="search for organizations" id="txtSearch" onKeyUp="txtSearch_submit()">
+		</div>
+
 	<table class='table'>
 		<tr>
 			<th><h4>Image</h4></th>
@@ -25,62 +37,60 @@ if (!$data){
 			<th><h4>Quantity</h4></th>
 			<th><h4>Volunteer Name</h4></th>
 		</tr>
+		<tr id="suggestion"></tr>
 		<?php
 			while ($row = mysqli_fetch_array($data)){
-				if ($row['event_id'] == $id){
-					$i = 0;
-					echo "<tr>";
-					echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
-					echo "<td>".date("F j Y h:i A", strtotime($row[3]))."</td>";
-					echo "<td><button class='btn btn-success attended[$i++]' >Attended</button> <button class='btn btn-danger absent' data-target=".$row['user_id']." id=".$row['user_id'].">Absent</button></td>";
+					$item_img = $row['resources_photo'];
+					$img_src = "../admin/volunteerResourcesImages/".$item_img;
+					echo "<tr id='lists'>";
+					echo "<td><img src=".$img_src." class='img'></td>";
+					echo "<td>".$row['resources_name']."</td>";
+					echo "<td>".$row['resources_description']."</td>";
+					echo "<td>".$row['noItems']."</td>";
+					echo "<td><a href='../volunteer/publicvolunteerProfile_1.php?id=".$row['user_id']."'>".$row['first_name']." ".$row['last_name']."</td>";
 					echo "</tr>";
-				}
+								
 			}
-		
-		
 		?>
 	</table>
-</div>
+	
+	</div>
 </div>
 </body>
 </html>
+<script src="assets/js/typeahead.min.js"></script>
 <script>
-	$(document).ready(function(){
-		allAbsent();
-		$(".absent").on("click", function(){
-			user_id = $(this).data("target");
-			$(this).attr("disabled", "disabled");
-			absent(user_id);
-		});
-	});
-	function absent(user_id){
-		$.ajax({
-			url: "markAbsent.php",
-			method: "GET",
-			data: {
-				cid:user_id
-			},
-			dataType: "json",
-			success: function (retval){
-				$(".absent").on("click", function(){
-					
-				});
-			}
-		});
-	}
-	
-	function allAbsent(){
-		var x = $.ajax({
-		url: "AllAbsent.php",
-		method: "GET",
-		//data: {id:event_id},
-		dataType: "json",
-		success: function (retval){
-				
-				for(var i=0; i<retval.length; i++){
-					 $("#"+retval[i].user_id+"").hide();
-				}
-		}
-	});
-	}
+function txtSearch_submit()
+	  {
+	    var search = document.getElementById("txtSearch").value;
+	    var xhr;
+	    if(window.XMLHttpRequest){
+	        xhr = new XMLHttpRequest();
+	    }
+	    else if(window.ActiveXObject)
+	    {
+	        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	    }
+	    var data = "key=" + search;
+	    xhr.open("POST", "search_listVolResources.php", true);
+	    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	    xhr.send(data);
+	    xhr.onreadystatechange = display_data;
+
+	    function display_data()
+	    {
+	        if(xhr.readyState ==4)
+	        {
+	            if(xhr.status == 200)
+	            {
+	                document.getElementById("suggestion").innerHTML = xhr.responseText;
+	                document.getElementById("lists").style.display = 'none';
+	            }
+	            else
+	            {
+	                alert('There was a problem with the request.')
+	            }
+	        }
+	    }
+	  }    
 </script>

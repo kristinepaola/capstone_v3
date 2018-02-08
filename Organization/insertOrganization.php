@@ -13,14 +13,15 @@ $mail->Host = 'smtp.gmail.com';
 $mail->Port = 587;
 $mail->SMTPSecure = 'tls';
 $mail->SMTPAuth = true;
-$mail->Username = "daphnecomendador@gmail.com";
-$mail->Password = "/*^d@phy!997&";
+$mail->Username = "ihelpmail018@gmail.com";
+$mail->Password = "capstone";
 $mail->setFrom('webportal@gmail.com', 'iHelp');
-$mail->addReplyTo('daphnecomendador@gmail.com', 'Daphne');
+$mail->addReplyTo('ihelpmail018@gmail', 'iHelp');
 $mail->addAddress($recipient, $recipientName);
 $mail->Subject = 'Welcome to iHelp '.$recipientName.'';
-$mail->msgHTML(file_get_contents('../org_confirmation.php'), __DIR__);
+$mail->msgHTML(file_get_contents('../org_confirmation.php'));
 $mail->AltBody = 'This is a plain-text message body';
+$mail->isHTML(true);
 
 //prof pic
 $name = $_FILES['user_prof_pic']['name'];

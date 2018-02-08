@@ -1,8 +1,9 @@
 <?php
 	session_start();
 	$id = $_SESSION['num'];
+	$event_id = $_GET['id'];
 	require ("../sql_connect.php");
-	$query = "SELECT * FROM user WHERE no_missed_activities >= 1";
+	$query = "SELECT * FROM attendance WHERE status = 'Absent' AND event_id = '$event_id'";
 	$result = mysqli_query($sql, $query);
 
 	$output=array();

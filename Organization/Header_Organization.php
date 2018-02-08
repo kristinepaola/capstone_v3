@@ -1,8 +1,8 @@
 <?php
 session_start();
 include('../sql_connect.php');
-
 $id = $_SESSION['num'];
+
 $query = "SELECT * FROM user where user_id = ".$id."";
 $data = mysqli_query ($sql, $query);
 if (!$data){
@@ -75,13 +75,7 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt=""></a>
+                <a class="navbar-brand" href="organization_dashboard.php"><img src="../assets/img/ihelp.png" height="38 px" width="149px" alt=""></a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -103,14 +97,14 @@ $img_src = "../admin/userProfPic/".$user_prof_pic;
 
 							<b class="caret"></b></a>
                             <ul class="dropdown-menu navbar-nav">
-								 <li>
-                                    <a href="organization_profile.php?id=<?php echo $id?>">My Profile</a>
+								 <li >
+                                    <a href="organization_profile.php?id=<?php echo $id?>" >My Profile</a>
                                 </li>
                                 <li>
                                     <a href="editOrganizationProfile.php">Edit Profile</a>
                                 </li>
                                 <li>
-                                    <a href="index-3.html">View Reports</a>
+                                   <a href="view_report.php">View Reports</a>
                                 </li>
                                 <li>
                                     <a href="../index.php">Log Out</a>

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
   <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+  <!-- <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css"> -->
   <link rel="stylesheet" href="bower_components/morris.js/morris.css">
   <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
   <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
@@ -37,30 +37,19 @@
                   </ul>
                 </li>
                 <li><a href="list_events.php"><h3>Manage Events</h3></a></li>
-                <li><a href="list_events.php"><h3>Reports</h3></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right" id="navbar-collapse">
+            <div class="navbar-custom-menu pull-right">
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
                     Welcome Admin!</h3>
                   </a>
-                   <ul class="dropdown-menu">
-                      <!-- User image -->
-                      <li class="user-header">
-                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
-
-                        <p>
-                          Admin
-                        </p>
-                      </li>
-                      <!-- Menu Body -->
-                      <li class="user-footer">
-                          <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
-                      </li>
-                    </ul>
+                  <ul class="dropdown-menu" role="menu">                    
+                    <li class="divider"></li>
+                    <li><a href="../logout.php">Sign Out</a></li>
+                  </ul>
                 </li>
               </ul>
             </div>

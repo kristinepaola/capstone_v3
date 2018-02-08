@@ -1,7 +1,6 @@
 <?php
 require ("../sql_connect.php");
 include ('nameTitle.php');
-
 $query = "SELECT * FROM user where user_id = '$id'";
 $result = mysqli_query ($sql, $query);
 if (!$result){
@@ -24,6 +23,16 @@ $dispAdv_data = mysqli_query ($sql, $dispAdv_query);
 if (!$dispAdv_data){
 "Error in query";
 }
+
+$occupation_query = "SELECT occupation_name FROM occupations";
+$occupation_data = mysqli_query ($sql, $occupation_query);
+
+$disp_ad_query = "SELECT advocacy_id FROM volunteer_advocacy WHERE volunteer_id = ".$id."";
+$disp_ad_data = mysqli_query($sql, $disp_ad_query);
+  if (!$disp_ad_query){
+    echo "Error in Query!";
+    exit(); 
+  }
 ?>
 
 <!DOCTYPE html>
@@ -105,7 +114,21 @@ if (!$dispAdv_data){
 									</div>
 									<div class="form-group">
 									 <label>Occupation </label>
-									 <input type = "text" name = "occupation" value="<?php echo $det_row['volunteer_occupation'];?>" class="form-control">
+									 <select name="occupation" class="form-control">
+										<?php
+											while ($row=mysqli_fetch_array($occupation_data)){
+												$occupation[]=$row['occupation_name'];
+											}
+											foreach($occupation AS $occ){
+												if ($det_row['volunteer_occupation'] == $occ){
+													echo "<option selected>".$occ."</option>";
+												}
+												else{
+													echo "<option>".$occ."</option>";													
+												}
+											}	
+										?>
+									 </select>
 									 </div>
 									 <div class="form-group">
 									<label>Schedule </label>
@@ -113,7 +136,7 @@ if (!$dispAdv_data){
 									</div>
 									<div class="form-group">
 									<label>About Me: </label>
-									<input type = "text" name = "aboutMe" value="<?php echo $det_row['volunteer_about_me'];?>" class="form-control">
+									<textarea required name="aboutMe" rows ="5" class="form-control"><?php echo $det_row['volunteer_about_me'];?></textarea>
 									</div>
 									<div class="form-group">
 									<label>Hobbies: </label>
@@ -122,15 +145,25 @@ if (!$dispAdv_data){
 									<div class="form-group">
 									<label>Select Advocacies:</label><br>
 									<?php
-									while ($row = mysqli_fetch_array($dispAdv_data)){
+										$exp = explode (', ', $row['advocacies']);
+										$advicon = $row['advocacy_icon'];
+										$img_src = "../admin/advocaciesIcon/".$advicon;
+										while($row=mysqli_fetch_array($dispAdv_data)){
 											$advicon = $row['advocacy_icon'];
 											$img_src = "../admin/advocaciesIcon/".$advicon;
-										
-												echo "<img src='".$img_src."' class='advicon'>";
+											foreach($exp as $adv){
+												if($adv==$row['advocacy_name']){
+													echo "<img src='".$img_src."' class='advicon'>";	
+													echo "<input checked type='checkbox' name = 'advocacy[]' value='".$row['advocacy_name']."'> <label>".$row['advocacy_name']."</label><br>";
+												}else{
+													echo "<img src='".$img_src."' class='advicon'>";	
+													echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_name']."'> <label>".$row['advocacy_name']."</label><br>";
+												}
+											}
+											
 												
-												echo "<input class='form-control' type='checkbox' name = 'advocacy[]' value='".$row['advocacy_name']."' id='check'> ".$row['advocacy_name']."<br>";
-		
-									}
+											
+										}
 									?>
 									
 									</div>

@@ -1,6 +1,7 @@
 <?php
 require ("../sql_connect.php");
 session_start();
+$id = $_SESSION['num'];
 
 //implode advocacy
 if (isset($_POST['advocacy'])){
@@ -8,12 +9,18 @@ if (isset($_POST['advocacy'])){
   $impAdv = array();
   foreach($checkedAdv as $advocacies){
     $impAdv[] = $advocacies;
+	$adv_query = "INSERT INTO volunteer_advocacy VALUES ('',
+														$advocacies,		
+														'$id'
+														)";
+	$adv_data = mysqli_query ($sql, $adv_query);
+	echo $adv_query;
   }
   $insertAdv = implode (", ", $impAdv);
 }else{
   echo "select at least 1 advocacy";
 }
-echo $insertAdv;
+
 
 $id = $_SESSION['num'];
 $first_name = $_POST['fname'];
@@ -50,7 +57,7 @@ if ($result){
 		if (!$det_result){
 			echo "problem inserting to volunteer_details";
 		}else{
-			header("location:volunteerProfile.php");
+			//header("location:volunteerProfile.php");
 		} 
 	}
 else{

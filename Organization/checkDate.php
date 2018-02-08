@@ -1,23 +1,28 @@
 <?php
-require('../sql_connect.php');
-$start_date = $_POST['date'];
-$query = "SELECT event_start FROM event";
-$data = mysqli_query($sql, $query);
-$cnt = mysqli_num_rows($data);
+session_start();
+require("../sql_connect.php");
+$id = $_SESSION['num'];
+$event_start = $_GET['event_start'];
 
-while ($row = mysqli_fetch_array($data)){
-	if ($start_date == $row['event_start']){
-		$msg = "<small class='text-danger'>An event with this time and date already exists!</small>";
-		$stat = "no";
-		$ret = array ($msg, $stat);
+//explode date-time 
+$exp = explode(" - ", $event_start);
+$start = date("Y-m-d H:i:s", strtotime($exp[0]));
+
+
+$query = "SELECT event_start FROM event WHERE user_id = '$id'";
+$data = mysqli_query($sql, $query);
+
+while ($row=mysqli_fetch_array($data)){
+	$date = $row['event_start'];
+	if ($start == $date){
+		$alert="Cannot create an event with the same date and time";
+		$ret = 1;
+		$resp = array($alert, $ret);
 	}else{
-		$msg = "<small class='text-success'>No event conflict!</small>";
-		$stat = "yes";
-		$ret = array ($msg, $stat);
+		$alert = "Date and Time available!";
+		$ret = 0;
+		$resp = array($alert, $ret);
 	}
 }
-
-]]
-
-echo json_encode($ret);
+echo json_encode($resp);
 ?>

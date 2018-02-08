@@ -19,12 +19,14 @@ if($result){
       header('location:volunteer/volunteerHome.php');
     }else if($_SESSION['identifier'] == 'organization'){
       header('location:Organization/organization_dashboard.php');
-    }else{
+    }else if($_SESSION['identifier'] == 'admin'){
       header('location:admin/admin_dashboard.php');
+
     }
 }else{
     $_SESSION['notThere'] = 1;
     header('location:login.php');
+echo 1;
 }
 ?>
 </html>

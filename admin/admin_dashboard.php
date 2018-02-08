@@ -1,3 +1,22 @@
+<?php 
+//index.php
+include("../sql_connect.php");
+
+$sub_query = "
+   SELECT user_type, count(*) as no_of_like FROM user 
+   GROUP BY user_type 
+   ORDER BY user_id ASC";
+$result = mysqli_query($sql, $sub_query);
+$data = array();
+while($row = mysqli_fetch_array($result))
+{
+ $data[] = array(
+  'label'  => $row["user_type"],
+  'value'  => $row["no_of_like"]
+ );
+}
+$data = json_encode($data);
+?>
 <!DOCTYPE html>
 <html>
 <?php include("../sql_connect.php");?>
@@ -36,31 +55,20 @@
                     <li><a href="list_organizations.php"><h3><i class="glyphicon glyphicon-user"></i> Organizations</h3></a></li>
                   </ul>
                 </li>
-                <li><a href="list_events.php"><h3>Manage Events</h3></a></li>
-                <li><a href="list_events.php"><h3>Reports</h3></a></li>
+                <li><a href="eve.php"><h3>Manage Events</h3></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right" id="navbar-collapse">
+            <div class="navbar-custom-menu pull-right">
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
                     Welcome Admin!</h3>
                   </a>
-                   <ul class="dropdown-menu">
-                      <!-- User image -->
-                      <li class="user-header">
-                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
-
-                        <p>
-                          Admin
-                        </p>
-                      </li>
-                      <!-- Menu Body -->
-                      <li class="user-footer">
-                          <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
-                      </li>
-                    </ul>
+                  <ul class="dropdown-menu" role="menu">                    
+                    <li class="divider"></li>
+                    <li><a href="../logout.php">Sign Out</a></li>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -71,8 +79,9 @@
     <section class="content">
       <div class="row">
         <div class="row">
-            <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer">
-            <a href="#">
+            <div class="col-md-3" ><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-volunteer"> -->
+            <div class="box box-widget widget-user">
+            <a href="vol.php">
             <div class="widget-user-header bg-white-active">
               <h3 class="widget-user-username">
 	                   	<?php
@@ -102,53 +111,9 @@
             </a>
           </div>
         </div>
-        <div class="modal fade" id="modal-volunteer">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Lists of Volunteers</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table class="table table-striped">
-			                        <thead>
-			                          <tr>
-			                            <th>Name</th>
-			                          </tr>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM user
-					                                  WHERE user_type = 'volunteer'";
-
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[4] ?>
-					                            <?php echo $row[6] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>            
-            </div>
-        <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-organization">
-            <a href="#">
+        <div class="col-md-3"><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-organization"> -->
+          <div class="box box-widget widget-user">
+            <a href="org.php">
             <div class="widget-user-header bg-white-active">
               <h3 class="widget-user-username">
 	                   	<?php
@@ -180,132 +145,50 @@
             </a>
           </div>
         </div>
+        <div class="col-md-3"><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-event">
+            <a href="#"> -->
+              <div class="box box-widget widget-user">
+                <a href="eve.php">
+                <div class="widget-user-header bg-white-active">
+                  <h3 class="widget-user-username">
+    	                   	<?php
+    	                   		$count = 0;
+    	                   		$result = "SELECT *
+    					                    FROM event
+                                  WHERE event_name != ''";
 
-        <div class="modal fade" id="modal-organization">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Lists of organizations</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table id="tabledit" class="table table-striped">
-			                        <thead>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM user
-					                                  WHERE user_type = 'organization'";
+    					         $info = mysqli_query($sql, $result);
 
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[4] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
+    					         while($row = mysqli_fetch_array($info)){
+    					         	$count++;
+    					         }
+    					          ?>
+    					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
+    	            </h3>
                 </div>
-              </div>            
-            </div>
-        <div class="col-md-4"><div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-event">
-            <a href="#">
-            <div class="widget-user-header bg-white-active">
-              <h3 class="widget-user-username">
-	                   	<?php
-	                   		$count = 0;
-	                   		$result = "SELECT *
-					                    FROM event";
-
-					         $info = mysqli_query($sql, $result);
-
-					         while($row = mysqli_fetch_array($info)){
-					         	$count++;
-					         }
-					          ?>
-					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
-	            </h3>
-            </div>
-            <div class="widget-user-image">
-              <img class="img-circle" src="assets/n_event.jpg" alt="User Avatar">
-            </div>
-            <div class="box-footer">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="description-block">
+                <div class="widget-user-image">
+                  <img class="img-circle" src="assets/n_event.jpg" alt="User Avatar">
+                </div>
+                <div class="box-footer">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="description-block">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
-        </a>
+          <div class="col-md-3">
+            <div class="box box-widget widget-user">
+              <div class="container" style="width:300px;">
+                 <h3 align="center">System Performance</h3>
+                 <div id="chart"></div>
+                </div>
+              </div>
         </div>
       </div>
-      <div class="modal fade" id="modal-event">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Upcoming Events</h3>
-                  </div>
-                  <div class="modal-body">
-                  	<div class="box">
-			            <section>
-			               <div class="box-body table-responsive no-padding">
-			                      <table id="tabledit" class="table table-striped">
-			                        <thead>
-			                        </thead>
-			                        <tbody>
-			                        	<p><?php
-					                        $result = "SELECT *
-					                                  FROM event";
-
-					                        $info = mysqli_query($sql, $result);
-
-					                       while($row = mysqli_fetch_array($info)){
-					                        ?>
-					                        <tr>
-					                        	<td><?php echo $row[1] ?></td>
-					                        </tr>
-					                        <?php
-					                       }
-					                    ?></p>
-			                        </tbody>
-			                      </table>
-			                    </div>
-			            </section>
-			          </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>            
-            </div>
-
-      <!-- DONUT CHART -->
-          <div class="box box-danger">
-          <div class="box box-danger">
-            <div class="box-header with-border">
-              <h3 class="box-title">System Performance</h3>
-            </div>
-            <div class="box-body chart-responsive">
-              <div class="chart" id="sales-chart" style="height: 300px; position: relative;"><svg height="300" version="1.1" width="542.237" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; top: -0.2px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><path fill="none" stroke="#3c8dbc" d="M271.1185,243.33333333333331A93.33333333333333,93.33333333333333,0,0,0,359.34625519497706,180.44625304313007" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#3c8dbc" stroke="#ffffff" d="M271.1185,246.33333333333331A96.33333333333333,96.33333333333333,0,0,0,362.18214732624415,181.4248826052307L398.7336459070204,194.03833029452744A135,135,0,0,1,271.1185,285Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#f56954" d="M359.34625519497706,180.44625304313007A93.33333333333333,93.33333333333333,0,0,0,187.4033462783141,108.73398312817662" stroke-width="2" opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;"></path><path fill="#f56954" stroke="#ffffff" d="M362.18214732624415,181.4248826052307A96.33333333333333,96.33333333333333,0,0,0,184.71250205154564,107.40757544301087L145.54576941747115,88.10097469226493A140,140,0,0,1,403.46013279246563,195.6693795646951Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#00a65a" d="M187.4033462783141,108.73398312817662A93.33333333333333,93.33333333333333,0,0,0,271.0891784690488,243.333328727518" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#00a65a" stroke="#ffffff" d="M184.71250205154564,107.40757544301087A96.33333333333333,96.33333333333333,0,0,0,271.0882359912682,246.3333285794739L271.0760884998742,284.9999933380171A135,135,0,0,1,150.0305097954186,90.31165416754118Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="271.1185" y="140" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="15px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 15px; font-weight: 800;" font-weight="800" transform="matrix(1.4524,0,0,1.4524,-122.741,-68.2181)" stroke-width="0.6885230654761905"><tspan dy="6.015625" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">In-Store Sales</tspan></text><text x="271.1185" y="160" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 14px;" transform="matrix(1.9444,0,0,1.9444,-256.151,-143.5556)" stroke-width="0.5142857142857143"><tspan dy="4.8125" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">30</tspan></text></svg></div>
-            </div>
-          </div>
     </section>
   </div>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -329,5 +212,40 @@
 <script src="dist/js/adminlte.min.js"></script>
 <script src="dist/js/pages/dashboard.js"></script>
 <script src="dist/js/demo.js"></script>
+<script src="plugins/dataTables/jquery.dataTables.min.js"></script>
 </body>
 </html>
+<script>
+$(document).ready(function(){
+ 
+ var donut_chart = Morris.Donut({
+     element: 'chart',
+     data: <?php echo $data; ?>
+    });
+  
+ $('#like_form').on('submit', function(event){
+  event.preventDefault();
+  var checked = $('input[name=user_type]:checked', '#like_form').val();
+  if(checked == undefined)
+  {
+   alert("Please Like any Framework");
+   return false;
+  }
+  else
+  {
+   var form_data = $(this).serialize();
+   $.ajax({
+    url:"action.php",
+    method:"POST",
+    data:form_data,
+    dataType:"json",
+    success:function(data)
+    {
+     $('#like_form')[0].reset();
+     donut_chart.setData(data);
+    }
+   });
+  }
+ });
+});
+</script>
