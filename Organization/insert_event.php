@@ -121,8 +121,11 @@ while($vol_row=mysqli_fetch_array($vol_data)){
 	$mail->addReplyTo('ihelpmail018@gmail', 'iHelp');
 
 	$mail->Subject = 'We are in need of Volunteers!';
-	$mail->msgHTML(file_get_contents('../org_confirmation.php'), __DIR__);
-	$mail->AltBody = 'This is a plain-text message body';
+	//$mail->msgHTML(file_get_contents('../org_confirmation.php'), __DIR__);
+	$mail->isHTML(true);
+	$mail->Body = 'You are invite to join <b><a href="http://localhost/capstone/capstone_v3/volunteer/invitation.php?id='.$d_id.'">'.$event_name.'</a></b>
+					
+					<br>Click the link to know more about the event.';
 
 	$mail->addAddress($vol_row['email_address'], $vol_row['first_name']);
 	//email config
@@ -131,7 +134,7 @@ while($vol_row=mysqli_fetch_array($vol_data)){
 	if (!$mail->send()) {
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		} else {
-			//header("location: organization_dashboard.php");		
+			header("location: organization_dashboard.php");		
 		}
 }
 

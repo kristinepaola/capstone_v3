@@ -42,7 +42,8 @@
                     WHERE B.user_id = C.user_id
                     AND B.user_type = 'volunteer' 
                     AND C.org_id = '$id' 
-                    AND A.event_id = C.event_id 
+                    AND A.event_id = C.event_id
+					LIMIT 5
                     ";
   $feedback_data = mysqli_query($sql, $feedback_query);
   
@@ -62,7 +63,7 @@
       $org_row = mysqli_fetch_array($org_profile_data);
 
 	// Display Recent Events
-	$recent_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'DONE'";
+	$recent_query = "SELECT * FROM event WHERE user_id = ".$id." AND event_status = 'DONE' LIMIT 4";
 	$recent_data = mysqli_query($sql, $recent_query);
 	if (!$recent_data){
 	  echo "ERROR IN QUERY 3";

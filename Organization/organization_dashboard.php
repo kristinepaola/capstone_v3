@@ -26,6 +26,7 @@ WHERE B.user_id = C.user_id
 AND B.user_type = 'volunteer' 
 AND C.org_id = '$id' 
 AND A.event_id = C.event_id 
+LIMIT 5
 ";
 $feedback_data = mysqli_query($sql, $feedback_query);
 $feedback_count = mysqli_num_rows($feedback_data);
@@ -47,7 +48,7 @@ while($row = mysqli_fetch_array($data)){
 //display events status = upcoming
 $event_query = "SELECT * FROM event 
 				WHERE user_id = ".$id." AND event_status = 'Upcoming'
-				ORDER BY event_start DESC
+				ORDER BY event_start ASC
 				LIMIT 2
 				";
 $event_data = mysqli_query($sql, $event_query);
@@ -181,8 +182,9 @@ $partner_data = mysqli_query ($sql, $partnership);
 							while($row=mysqli_fetch_array($partner_data)){
 								echo "<div id=".$row['event_id'].">";
 								echo "<small><b>".$row['organization_name']."</b> wants to partner with you in their event <b>".$row['event_name']."</b></small>";
-								echo "<br><button data-partner=".$row['event_id']." class='btn btn-sucess btn-xs accept'><span></span class='glyphicon glyphicon-ok'></button>";
+								echo "<br><button data-partner=".$row['event_id']." class='btn btn-success btn-xs accept'><span class='glyphicon glyphicon-ok'></span></button>";
 								echo "<button data-partner=".$row['event_id']." class='btn btn-danger btn-xs decline'><span class='glyphicon glyphicon-remove'></span></button>";
+								
 								echo "</div>";
 								}
 						?>
@@ -250,7 +252,7 @@ $partner_data = mysqli_query ($sql, $partnership);
 			        while ($event_row = mysqli_fetch_array($event_data)){
 			          $event_img = $event_row['event_img'];
 			          if ($event_img == ""){
-			            $img_src = "../admin/assets/img/default_event.png";
+			            $img_src = "../admin/assets/n_event.png";
 			          }else{
 			            $img_src = "../admin/eventImages/".$event_img;
 			          }
@@ -384,6 +386,14 @@ $partner_data = mysqli_query ($sql, $partnership);
 								<div class="col-xs-10 padding-bottom-15">
 									<span id="event_location"></span>
 								</div>
+							</div>
+							<div class="col-xs-12 padding-bottom-15">
+								<div class="col-xs-2 padding-bottom-15">
+									<h3 class='glyphicon glyphicon-time'></h3>
+								</div>
+								<div class="col-xs-10 padding-bottom-15">
+									<span id="partnership">PARTNERSHIP HERE</span>
+								</div>																
 							</div>
 							<div class="col-xs-12 padding-bottom-15">
 								<div class="col-xs-2 padding-bottom-15">
@@ -665,7 +675,7 @@ function fetchData (event_id){
 		
 }
 function getAdv(event_id){
-	var x = $.ajax({
+	$.ajax({
 		url:"getAdv.php",
 		method: "GET",
 		data:{
@@ -673,15 +683,13 @@ function getAdv(event_id){
 		},
 		dataType: "json",
 		success:function(retval){
-			console.log(retval.length);
+			console.log(retval);
 			for(var i=0; i<retval.length; i++){
-				$("#adv_target").html("");
 				var adv_icon = "<img src='../admin/advocaciesIcon/"+retval[i]+"' class='adv'>";
 				$("#adv_target").append(adv_icon);
 			}
 		}
 	});
-	console.log(x);
 }
 
 function occupation(event_id){
