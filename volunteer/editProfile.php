@@ -130,10 +130,6 @@ $disp_ad_data = mysqli_query($sql, $disp_ad_query);
 										?>
 									 </select>
 									 </div>
-									 <div class="form-group">
-									<label>Schedule </label>
-									<input type = "text" name = "schedule" value="<?php echo $det_row['volunteer_schedule'];?>" class="form-control">
-									</div>
 									<div class="form-group">
 									<label>About Me: </label>
 									<textarea required name="aboutMe" rows ="5" class="form-control"><?php echo $det_row['volunteer_about_me'];?></textarea>

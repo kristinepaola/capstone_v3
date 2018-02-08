@@ -161,7 +161,15 @@
 		{
 			$(".section-pagination").hide();
 		}
-		
+		$.ajax({
+			url:"checkStatus.php",
+			method: "GET",
+			data:{id:<?php echo$id?>},
+			dataType: "json",
+			success: function (retval){
+				
+			}
+		});
 	});
 	function heart(org_id){
 			

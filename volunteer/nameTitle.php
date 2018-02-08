@@ -6,7 +6,7 @@
 	header('location:../index.php');
 }
   
-  $query = "SELECT * FROM user WHERE user_id = '$id'";
+  $query = "SELECT * FROM user WHERE user_id = '$id' AND user_status='Active'";
   $data = mysqli_query($sql, $query);
   if (!$data){
     echo "error";

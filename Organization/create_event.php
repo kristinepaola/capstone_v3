@@ -97,11 +97,11 @@ $occupation_data = mysqli_query ($sql, $occupation_query);
 											<div class="form-group  col-sm-12">
 												<div class="form-group col-sm-3">
 													<label>Minimum</label>
-													<input min="1" max="70" name="age_req[]" type="number" id="num_vol" class="form-control"  required">
+													<input min="1" max="70" name="age_req[]" type="number" id="num_1" class="form-control"  required">
 												</div>
 												<div class="form-group col-sm-3">
 													<label>Maximum</label>
-													<input min="1" max="70" name="age_req[]" type="number" id="num_vol" class="form-control" required">
+													<input min="1" max="70" name="age_req[]" type="number" id="num_2" class="form-control" required">
 												</div>
 											</div>											
 										</div>	
@@ -204,12 +204,29 @@ $occupation_data = mysqli_query ($sql, $occupation_query);
 <script>
 $(document).ready(function(){
 	//check num of volunteers 
-	$("#num_vol_1").focusout(function(){
-		var num_vol_1 = parseInt($("#num_vol_1").val());
+	$("#num_1").focusout(function(){
+		var num_1 = parseInt($("#num_1").val());
+		$("#num_2").focusout(function(){
+				var num_2 = parseInt($("#num_2").val());
+				console.log(num_2);
+				console.log(num_1);
+				if (num_1>num_2){
+					alert("Error: Minimum Age Requirement is bigger than Maximum Age Requirement. Please input again");
+					$("#submit").click(function(event){
+						$("#submit").prop('disabled', true);
+						});
+				}else if (num_1 == num_2){
+					alert("Error: Minimum Age Requirement and Maximum Age Requirement are the same");
+					$("#submit").click(function(event){
+						$("#submit").prop('disabled', true);
+						});
+				}else{
+					$("#submit").prop('disabled', false);
+				}
+			});
 		
-		addMoreVol(num_vol_1);
-		addOcc(num_vol_1);
 	});	
+	
 	//check date
 		var x = $("#daterange").blur(function(){
 			var date = $(this).val();

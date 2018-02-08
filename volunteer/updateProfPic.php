@@ -16,7 +16,7 @@ $query = "UPDATE `user` SET user_prof_pic = '$name' WHERE `user_id` = $id";
 $data = mysqli_query($sql, $query);
 if($data){
 	move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_dir.$name);
-	header("location:volunteerProfile_1.php");
+	header("location:volunteerProfile.php");
 }else{
 	echo "ERROR IN QUERY";
 }

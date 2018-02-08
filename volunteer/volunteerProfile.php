@@ -262,14 +262,12 @@
                          <b> LOCATION:</b><h5><?php echo $row['user_location']; ?></h5>
                       </div>
                       <div>
-                        <b> BIRTHDAY:</b><h5><?php echo date("M d, Y h:i A", strtotime($row2['volunteer_birthday'])) ?></h5>
+                        <b> BIRTHDAY:</b><h5><?php echo date("M d, Y ", strtotime($row2['volunteer_birthday'])) ?></h5>
                       </div>
                       <div>
                         <b> OCCUPATION:</b><h5><?php echo $row2['volunteer_occupation']; ?></h5>
                       </div>
-                      <div>
-                      <b> SCHEDULE:</b><h5><?php echo $row2['volunteer_schedule']; ?></h5>
-                      </div>
+                      
                       <h3 class="dealer-name">
                           <h5><strong>ABOUT ME</strong></h5>
                          <h5><?php echo $row2['volunteer_about_me']; ?></h5>   

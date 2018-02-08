@@ -29,7 +29,6 @@ $last_name = $_POST['lname'];
 $user_location = $_POST['user_location'];
 $volunteer_birthday = $_POST['birthday'];
 $volunteer_occupation = $_POST['occupation'];
-$volunteer_schedule =$_POST['schedule'];
 $volunteer_about_me = $_POST['aboutMe'];
 $volunteer_hobbies = $_POST['hobbies'];
 
@@ -44,7 +43,6 @@ $query = "UPDATE `user` SET `first_name` = '$first_name',
 
 $det_query = "UPDATE `volunteer_details` SET  `volunteer_birthday` = '$volunteer_birthday',
 							`volunteer_occupation` = '$volunteer_occupation',
-							`volunteer_schedule` = '$volunteer_schedule',
 							`volunteer_about_me` = '$volunteer_about_me',
 							`volunteer_hobbies` = '$volunteer_hobbies'
 							WHERE `user_id` = $id";
@@ -57,7 +55,7 @@ if ($result){
 		if (!$det_result){
 			echo "problem inserting to volunteer_details";
 		}else{
-			//header("location:volunteerProfile.php");
+			header("location:volunteerProfile.php");
 		} 
 	}
 else{

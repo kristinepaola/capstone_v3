@@ -40,7 +40,7 @@ if (!$dispAdv_data){
                                 <div class="wizard-header">
                                     <h3>
                                         <b>Welcome!</b> Enter your Organization's Basic Information <br>
-                                        <small>Lorem ipsum dolor sit amet, consectetur adipisicing.</small>
+                                        <small>Build a profile for your organization.</small>
                                     </h3>
                                 </div>
 
@@ -140,7 +140,7 @@ if (!$dispAdv_data){
 														
 																echo "<img src='".$img_src."' class='advicon'>";
 																
-																echo "<input type='checkbox' name = 'advocacy[]' value='".$row['advocacy_id']."'> ".$row['advocacy_name']."<br>";
+																echo "<input class='icheckbox_square-red' type='checkbox' name = 'advocacy[]' value='".$row['advocacy_id']."'> ".$row['advocacy_name']."<br>";
 															
 															
 														  }

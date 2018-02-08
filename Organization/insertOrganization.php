@@ -21,7 +21,7 @@ $mail->addAddress($recipient, $recipientName);
 $mail->Subject = 'Welcome to iHelp '.$recipientName.'';
 $mail->msgHTML(file_get_contents('../org_confirmation.php'));
 $mail->AltBody = 'This is a plain-text message body';
-$mail->isHTML(true);
+
 
 //prof pic
 $name = $_FILES['user_prof_pic']['name'];
@@ -70,13 +70,13 @@ $data_user = mysqli_query($sql, $query_user);
 if (!$data_user){
   echo "ERROR IN QUERY 1";
 }else{
-	
+	move_uploaded_file($_FILES['user_prof_pic']['tmp_name'], $target_dir.$name);
 	$d_id = mysqli_insert_id($sql);
 	//echo $d_id;
 	$name_cert = $_FILES['organization_certificate']['name'];
 	$target_dir_cert = "../admin/orgCert/";
 	$target_file_cert = $target_dir_cert . basename($_FILES['organization_certificate']['name']);
-
+	
 	// select file type
 	$imagefileType_cert = strtolower (pathinfo($target_file_cert, PATHINFO_EXTENSION));
 
@@ -104,11 +104,13 @@ if (!$data_user){
 		if (!$mail->send()) {
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		} else {
+			move_uploaded_file($_FILES['organization_certificate']['tmp_name'], $target_dir_cert.$name_cert);
 			header("location:../login.php");			
 		}
 	}
 	  
 }
- move_uploaded_file($_FILES['user_prof_pic']['tmp_name'], $target_dir.$name);
+	
+	
 
 ?>
