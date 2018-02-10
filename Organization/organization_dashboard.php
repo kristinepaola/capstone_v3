@@ -219,7 +219,11 @@ $partner_data = mysqli_query ($sql, $partnership);
 							<ul>
 								<?php
 								while ($done_row=mysqli_fetch_array($past_data)){
+									if($done_row['event_img']==""){
+										
+									}
 								$event_img = $done_row['event_img'];
+								echo $event_img;
 								$img_src = "../admin/eventImages/".$event_img;
 								echo '<li>
 									<div class="col-md-3 col-sm-3 col-xs-3 blg-thumb p0">
@@ -389,10 +393,10 @@ $partner_data = mysqli_query ($sql, $partnership);
 							</div>
 							<div class="col-xs-12 padding-bottom-15">
 								<div class="col-xs-2 padding-bottom-15">
-									<h3 class='glyphicon glyphicon-time'></h3>
+									<h3 class='glyphicon glyphicon-user'></h3>
 								</div>
 								<div class="col-xs-10 padding-bottom-15">
-									<span id="partnership">PARTNERSHIP HERE</span>
+									<span id="partnership"></span>
 								</div>																
 							</div>
 							<div class="col-xs-12 padding-bottom-15">
@@ -630,6 +634,7 @@ function fetchData (event_id){
 			},
 			dataType: "json",
 			success:function(retval){
+				$("#adv_target").html("");
 				$("#event_img").html("");
 				$("#event_location").html("");
 				$("#event_title").html("");
@@ -663,6 +668,7 @@ function fetchData (event_id){
 				
 				$(".prereg").attr("href", "listPreRegistered.php?cid="+event_id);
 				$(".volresources").attr("href", "list_VolResources.php?cid="+event_id);
+				partnership(event_id);
 				occupation(event_id);
 				getAdv(event_id);
 				initMap(event_location);
@@ -673,6 +679,19 @@ function fetchData (event_id){
 		});
 		
 		
+}
+function partnership(event_id){
+	$.ajax({
+		url: "checkPartnership.php",
+		method: "GET",
+		data:{
+			cid:event_id
+		},
+		dataType: "json",
+		success: function(retval){
+			console.log(retval);
+		}
+	});
 }
 function getAdv(event_id){
 	$.ajax({

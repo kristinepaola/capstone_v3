@@ -58,17 +58,20 @@
                      <table id="event_data" class="table table-striped table-bordered">  
                           <thead>  
                                <tr>  
-                                    <td>Event Name</td>
-                                    <td>Event Organizer</td>
-                                    <td>Event Status</td>
-                                    <td>No. of People Needed</td>
-                                    <td>Pre-registered</td>
-                                    <td>Date Registered</td>      
+                                    <td><center><strong>Event Name</strong></center></td>
+                                    <td><center><strong>Event Organizer</strong></center></td>
+                                    <td><center><strong>Event Status</strong></center></td>
+                                    <td><center><strong>No. of People Needed</strong></center></td>
+                                    <td><center><strong>Pre-registered</strong></center></td>
+                                    <td><center><strong>Date Registered</strong></center></td>      
                                </tr>  
                           </thead>  
                           <?php  
                           while($row = mysqli_fetch_array($result))  
                           {  
+                            $row["event_no_of_people"] = (string)$row["event_no_of_people"];
+                            $row["pre_registered_count"] = (string)$row["pre_registered_count"];
+
                                echo '  
                                <tr>  
                                     <td>'.$row["event_name"].'</td>
@@ -76,7 +79,7 @@
                                     <td>'.$row["event_status"].'</td>
                                     <td>'.$row["event_no_of_people"].'</td>
                                     <td>'.$row["pre_registered_count"].'</td>
-                                    <td>'.$row["timestamp"].'</td>   
+                                    <td><center>'.date("M d, Y h:i A", strtotime($row["timestamp"])).'</center></td>   
                                </tr>  
                                ';  
                           }  

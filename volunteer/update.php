@@ -3,6 +3,10 @@ require ("../sql_connect.php");
 session_start();
 $id = $_SESSION['num'];
 
+
+
+
+
 //implode advocacy
 if (isset($_POST['advocacy'])){
   $checkedAdv = $_POST['advocacy'];
@@ -31,6 +35,12 @@ $volunteer_birthday = $_POST['birthday'];
 $volunteer_occupation = $_POST['occupation'];
 $volunteer_about_me = $_POST['aboutMe'];
 $volunteer_hobbies = $_POST['hobbies'];
+
+
+//age
+$from = new DateTime($volunteer_birthday);
+$to   = new DateTime('today');
+echo $from->diff($to)->y;
 
 $query = "UPDATE `user` SET `first_name` = '$first_name',
 						`middle_name` = '$middle_name',

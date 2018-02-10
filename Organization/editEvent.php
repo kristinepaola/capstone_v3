@@ -37,6 +37,15 @@ $occupation_data = mysqli_query ($sql, $occupation_query);
 	$event_query = "SELECT * FROM event WHERE event_id = $id";
 	$event_result = mysqli_query($sql, $event_query);
 	$event_row = mysqli_fetch_array ($event_result);
+	//date
+	$start = $event_row['event_start'];
+	$end = $event_row['event_end'];
+	$start=date("m/d/Y h:i A", strtotime($start));
+	$end=date("m/d/Y h:i A", strtotime($end));
+	$daterange=array($start,$end);
+	$impdate = implode (" - ", $daterange);
+
+	
 //ORG QUERY
 $org_query = "SELECT * FROM organization_details";
 $org_data = mysqli_query ($sql, $org_query);
@@ -108,7 +117,7 @@ if(!$org_data){
 									<div class="col-sm-6">
 											<div class="form-group col-sm-12">
 												<label>Date *</label>
-												<input required type="text" name="start" id="daterange" class="form-control" value="<?php echo $row['start'];?>"/>
+												<input required type="text" name="daterange" id="daterange" class="form-control" value="<?php echo $impdate;?>"/>
 												<label><small id="prompt"></small></label>
 											</div>
 											<div class="form-group col-sm-12">
@@ -124,11 +133,11 @@ if(!$org_data){
 											<div class="form-group  col-sm-12">
 												<div class="form-group col-sm-3">
 													<label>Minimum</label>
-													<input min="1" max="70" name="min_age" type="number" id="num_vol" class="form-control"  value="<?php echo $row['min_age'];?>"required>
+													<input min="1" max="70" name="min_age" type="number" id="num_vol[]" class="form-control"  value="<?php echo $row['min_age'];?>"required>
 												</div>
 												<div class="form-group col-sm-3">
 													<label>Maximum</label>
-													<input min="1" max="70" name="max_age" type="number" id="num_vol" class="form-control" value="<?php echo $row['max_age'];?>"required>
+													<input min="1" max="70" name="max_age" type="number" id="num_vol[]" class="form-control" value="<?php echo $row['max_age'];?>"required>
 												</div>
 											</div>											
 										</div>	
@@ -272,14 +281,17 @@ $(document).ready(function(){
 	var disp_date = moment().add(1, 'days');
 	
 	//date range picker
-	$('#daterange').daterangepicker({
+	 $('#daterange').daterangepicker({
 			"timePicker": true,
 			"minDate": disp_date,
 			 "endDate": disp_date,
 			 "locale": {
-				format: 'MM/DD/YYYY h:mm A'
+				format: 'MM/DD/YYYY h:mm A',
+				startDate: '<?php echo $start?>',
+				endDate: '<?php echo $end ?>'
 			}
 	});
+	
 
    var display = '<div id="container"><div class="form-group col-sm-12"><div class="form-group col-sm-3"><label>Qty</label><input required name="no_volunteer[]" type="number" id="no_volunteer" class="form-control"></div><div class="form-group col-sm-6"><label>Occupation Name </label><input required name="occupation_name[]" type="text" id="occupation_name" class="form-control"></div><div class="form-group col-sm-3"><label>Delete</label><a class="btn btn-danger" id="delete_occ"><span class="glyphicon glyphicon-minus"></span></a></div></div></div>';
 	//add an occupation field

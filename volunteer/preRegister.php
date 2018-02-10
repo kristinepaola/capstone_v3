@@ -22,8 +22,8 @@ while($req_row = mysqli_fetch_array($req_data)){
 	$noVolunteers = $req_row['noVolunteers'];
 	if ($req_row['occupationName'] == $user_occupation){
 		if ($req_row['pre_registered_count'] == $noVolunteers){
-			$head = "Sorry! Pre Registratin is already full noVolunteers";
-			$text = "Better luck next time if!";
+			$head = "Sorry! Pre Registratin is already full";
+			$text = "Better luck next time";
 			$output = array($head, $text);
 		}else{
 			if ($count > $req_row['pre_registered_count']){
@@ -31,7 +31,8 @@ while($req_row = mysqli_fetch_array($req_data)){
 			$user_query = "INSERT INTO event_preregistration VALUES ('',
 												$event_id,
 												$user_id,
-												NOW())";
+												NOW(),
+												'unseen')";
 			$user_data = mysqli_query($sql,$user_query);
 			$update_query = "UPDATE event
 				SET pre_registered_count = pre_registered_count + 1
@@ -80,7 +81,7 @@ while($req_row = mysqli_fetch_array($req_data)){
 	}
 }
 
-
+echo json_encode($output);
 
 
 
@@ -102,7 +103,7 @@ while($req_row = mysqli_fetch_array($req_data)){
 	// $output[] = $select_row;
 // }
 
-echo json_encode($output);
+
 		
 
 

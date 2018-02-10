@@ -1,6 +1,9 @@
 <?php 
 //index.php
 include("../sql_connect.php");
+$countUser = 0;
+$countEvent = 0;
+$totalCount = 0;
 
 $sub_query = "
    SELECT user_type, count(*) as no_of_like FROM user 
@@ -16,10 +19,20 @@ while($row = mysqli_fetch_array($result))
  );
 }
 $data = json_encode($data);
+
+$query="SELECT * FROM user WHERE notif_status = 'unseen' AND user_type != 'admin'";
+$result=mysqli_query($sql, $query);
+$countUser=mysqli_num_rows($result);
+
+$query2="SELECT * FROM event WHERE notif_status = 'unseen'";
+$result=mysqli_query($sql, $query2);
+$countEvent=mysqli_num_rows($result);
+
+$totalCount = $countUser + $countEvent;
+
 ?>
 <!DOCTYPE html>
 <html>
-<?php include("../sql_connect.php");?>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,43 +49,128 @@ $data = json_encode($data);
   <link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+ 
+      <style>
+      #navno{list-style:none;margin: 0px;padding: 0px;}
+      #navno li {
+        font-family: Roboto;
+        font-size: 20px;
+        font-weight:bold;
+      }
+      #navno li a{color:#333333;text-decoration:none}
+      #navno li a:hover{color:#000000;text-decoration:none}
+      #notification_li
+      {
+        position:relative
+      }
+      #notificationContainer 
+      {
+      background-color: #fff;
+      border: 1px solid rgba(100, 100, 100, .4);
+      -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+      overflow: visible;
+      position: absolute;
+      top: 50px;
+      margin-left: -170px;
+      width: 300px;
+      z-index: 1;
+      display: none; // Enable this after jquery implementation 
+      }
+      #notificationTitle
+      {
+      font-weight: bold;
+      padding: 8px;
+      font-size: 13px;
+      background-color: #ffffff;
+      position: fixed;
+      z-index: 1000;
+      width: 300px;
+      border-bottom: 1px solid #dddddd;
+      }
+      #notificationsBody
+      {
+      padding: 8px 0px 0px 0px !important;
+      min-height:200px;
+      }
+      #notificationFooter
+      {
+      background-color: #e9eaed;
+      text-align: center;
+      font-weight: bold;
+      padding: 8px;
+      font-size: 12px;
+      border-top: 1px solid #dddddd;
+      }
+    #notification_count 
+    {
+    padding: 3px 7px 3px 7px;
+    background: #cc0000;
+    color: #ffffff;
+    font-weight: bold;
+    margin-left: 77px;
+    border-radius: 9px;
+    -moz-border-radius: 9px; 
+    -webkit-border-radius: 9px;
+    position: absolute;
+    margin-top: -11px;
+    font-size: 11px;
+    }
+</style>
 </head>
-<body class="hold-transition skin-white layout-top-nav" onload="viewData()">
+
+<body class="hold-transition skin-gray layout-top-nav" onload="viewData()">
     <div class="wrapper">
       <header class="main-header">
         <nav class="navbar navbar-static-top">
           <div class="container">
-            <div class="navbar-header">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="admin_dashboard.php"><img src="../assets/img/iHelplogo.png" height="48px" width="149px" alt=""></a>
             </div>
             <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="admin_dashboard.php"><h3>Home</h3></a></li>
+                <li class="active"><a href="admin_dashboard.php"><h4>Home</h4></a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><h3>Manage Accounts <span class="caret"></span></h3></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><h4>Manage Accounts <span class="caret"></span></h4></a>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="list_volunteers.php"><h3><i class="glyphicon glyphicon-user"></i> Volunteer</h3></a></li>
+                    <li><a href="list_volunteers.php"><h4><i class="glyphicon glyphicon-user"></i> Volunteer</h4></a></li>
                     <li class="divider"></li>
-                    <li><a href="list_organizations.php"><h3><i class="glyphicon glyphicon-user"></i> Organizations</h3></a></li>
+                    <li><a href="list_organizations.php"><h4><i class="glyphicon glyphicon-user"></i> Organizations</h4></a></li>
                   </ul>
                 </li>
-                <li><a href="eve.php"><h3>Manage Events</h3></a></li>
+                <li><a href="eve.php"><h4>Manage Events</h4></a></li>
               </ul>
             </div>
-            <div class="navbar-custom-menu pull-right">
-              <ul class="nav navbar-nav">
-                <li class="dropdown user user-menu">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <h3><img src="assets/image1.jpg" class="user-image" alt="User Image">
-                    Welcome Admin!</h3>
-                  </a>
-                  <ul class="dropdown-menu" role="menu">                    
-                    <li class="divider"></li>
-                    <li><a href="../logout.php">Sign Out</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
+                 <div class="navbar-custom-menu pull-right">
+                        <ul class="nav navbar-nav">
+                          
+                              <li id="notification_li">
+                                <div id="navno">
+                                  <a href="#" id="notificationLink"><h3>Notifications</h3></a>
+                                <span id="notification_count"><?php if($totalCount > 0) { echo $totalCount; } ?></span>
+                                <div id="notificationContainer">
+                                <div id="notificationTitle">Notifications</div>
+                                <div id="notificationsBody" class="notifications"></div>
+                              </div>
+                              </div>
+                            </li>
+                            <li class="dropdown user user-menu">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <h5><img src="assets/image1.jpg" class="user-image" alt="User Image">
+                                Welcome Admin!</h5>
+                              </a>
+                                  <ul class="dropdown-menu">
+                                      <li class="user-header">
+                                        <img src="assets/image1.jpg" class="img-circle" alt="User Image">
+                                        <p> Admin </p>
+                                      </li>
+                                      <li class="user-body">
+                                        <a href="../logout.php" class="btn btn-default btn-flat">Sign Out</a>
+                                      </li>
+                                  </ul>
+                            </li>
+                        </ul>
+                  </div>
+              </div>
         </nav>
   </header>
   <div class="content-header">
@@ -100,7 +198,7 @@ $data = json_encode($data);
 	            </h3>
             </div>
             <div class="widget-user-image">
-              <img class="img-circle" src="assets/n_volunteer.jpg" alt="User Avatar">
+              <img class="img-circle" src="assets/volunteer.png" alt="User Avatar">
             </div>
             <div class="box-footer">
                 <div class="col-sm-12">
@@ -119,8 +217,8 @@ $data = json_encode($data);
 	                   	<?php
 	                   		$count = 0;
 	                   		$result = "SELECT *
-					                    FROM user
-					                    WHERE user_type = 'organization'";
+					                    FROM organization_details
+					                    WHERE organization_status = 'Pending' ";
 
 					         $info = mysqli_query($sql, $result);
 
@@ -128,11 +226,11 @@ $data = json_encode($data);
 					         	$count++;
 					         }
 					          ?>
-					          <?php echo $count?> <?php if($count<=1){ echo 'Organization';}else{ echo 'Organizations';}?>
+					          <?php echo $count?> <?php if($count<=1){ echo 'Pending Organization';}else{ echo 'Pending Organizations';}?>
 	            </h3>
             </div>
             <div class="widget-user-image">
-              <img class="img-circle" src="assets/n_organization.jpg" alt="User Avatar">
+              <img class="img-circle" src="assets/organization.png" alt="User Avatar">
             </div>
             <div class="box-footer">
               <div class="row">
@@ -145,8 +243,7 @@ $data = json_encode($data);
             </a>
           </div>
         </div>
-        <div class="col-md-3"><!-- <div class="box box-widget widget-user" data-toggle="modal" data-target="#modal-event">
-            <a href="#"> -->
+        <div class="col-md-3">
               <div class="box box-widget widget-user">
                 <a href="eve.php">
                 <div class="widget-user-header bg-white-active">
@@ -155,7 +252,7 @@ $data = json_encode($data);
     	                   		$count = 0;
     	                   		$result = "SELECT *
     					                    FROM event
-                                  WHERE event_name != ''";
+                                  WHERE event_name != '' AND event_status = 'Upcoming'";
 
     					         $info = mysqli_query($sql, $result);
 
@@ -163,11 +260,11 @@ $data = json_encode($data);
     					         	$count++;
     					         }
     					          ?>
-    					          <?php echo $count?> Upcoming <?php if($count<=1){ echo 'Event';}else{ echo 'Events';}?>
+    					          <?php echo $count?>  <?php if($count<=1){ echo 'Upcoming Event';}else{ echo 'Upcoming Events';}?>
     	            </h3>
                 </div>
                 <div class="widget-user-image">
-                  <img class="img-circle" src="assets/n_event.jpg" alt="User Avatar">
+                  <img class="img-circle" src="assets/event_admin.png" alt="User Avatar">
                 </div>
                 <div class="box-footer">
                   <div class="row">
@@ -217,7 +314,46 @@ $data = json_encode($data);
 </html>
 <script>
 $(document).ready(function(){
- 
+
+    function myFunction() {
+                    $.ajax({
+                        url: "view_notification_admin.php",
+                        type: "POST",
+                        processData:false,
+                        success: function(data){
+                            $("#notification_count").fadeOut("slow");                   
+                            $("#notificationsBody").show();$("#notificationsBody").html(data);
+                        },
+                        error: function(){}           
+                    });
+                 }
+                 
+                 $(document).ready(function() {
+                    $('body').click(function(e){
+                        if ( e.target.id != 'notification-icon'){
+                            $("#notification-latest").hide();
+                        }
+                    });
+                });
+ // SAMPLE
+ $("#notificationLink").click(function()
+      {
+      $("#notificationContainer").fadeToggle(300);
+      $("#notification_count").fadeOut("slow");  
+       myFunction();
+      return false;
+      });
+
+      $(document).click(function()
+      {
+      $("#notificationContainer").hide();
+      });
+
+      $("#notificationContainer").click(function()
+      {
+        return false;
+      });
+// END OF SAMPLE CODE
  var donut_chart = Morris.Donut({
      element: 'chart',
      data: <?php echo $data; ?>
@@ -228,7 +364,7 @@ $(document).ready(function(){
   var checked = $('input[name=user_type]:checked', '#like_form').val();
   if(checked == undefined)
   {
-   alert("Please Like any Framework");
+   alert("undefined");
    return false;
   }
   else
@@ -249,3 +385,4 @@ $(document).ready(function(){
  });
 });
 </script>
+

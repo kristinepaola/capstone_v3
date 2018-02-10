@@ -71,6 +71,7 @@
                                     echo '<div id="lists">';
 									while($row = mysqli_fetch_array($data)){
 										$org_id = $row['user_id'];
+										
 										$org_img = $row['user_prof_pic'];
 										$img_src = "../admin/userProfPic/".$org_img;
 										echo '	<div class="col-md-4 p0">
@@ -80,8 +81,6 @@
 														</div>
 														<div class="item-entry overflow">
 															<h1><a href="organization_profile_public.php?id='.$row['user_id'].'">'.$row['first_name'].'</a></h1>
-															 <h5>Location:<a href="">'.$row['user_location'].'</h5>
-                                                            <h6>Advocacies:<a href="">'.$row['advocacies'].'</h6>
 															<button type="button" class="btn-lg btn-success follow" data-target='.$row['user_id'].' id='.$row['user_id'].'>
 															  <center><span class="glyphicon glyphicon-heart" aria-hidden="true" ></span></center>
 															</button>
@@ -93,8 +92,8 @@
 													</div>
 												</div> ';
 									}
-
-
+									
+		
 								
 								
 								?>
@@ -107,6 +106,23 @@
                 </div>
             </div>
         </div>
+					<!-- END OF ALERT MODAL -->
+			<div id="alert" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title" id="head">Success</h4>
+					</div>
+					<div class="modal-body">
+						<center><strong class="text-success" id="text">You have followed an organization!</strong></center>
+						
+					</div> 
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<!-- END OF ALERT MODAL -->
 </body>
 </html>
 <script src="../assets/js/jquery.min.js"></script>
@@ -171,19 +187,18 @@
 			}
 		});
 	});
-	function heart(org_id){
-			
-			var x = $.ajax({
-				url: "follow.php",
-				method: "GET",
-				data: {org:org_id},
-				dataType: "json",
-				success: function (retval){
-					$("#alert").modal("show");
-					check(org_id);
-			
-		}
+	function heart(org_id){		
+	var x = $.ajax({
+		url: "follow.php",
+		method: "GET",
+		data: {org:org_id},
+		dataType: "json",
+		success: function (retval){
+			$("#alert").modal("show");
+			check(org_id);		
+		}	
 	});
+	console.log(x);
 	}
 	function check(org_id){
 	var x = $.ajax({
@@ -213,6 +228,5 @@ function disableButton(){
 				}
 		}
 	});
-	console.log(x);
 }
 </script>

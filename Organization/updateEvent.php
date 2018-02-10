@@ -30,7 +30,7 @@
 		$end = date("Y-m-d H:i:s", strtotime($exp[1]));
 		//for each to get sum of no. vol needed
 		$total=0;
-		foreach($_POST['num_vol'] as $numvol){
+		foreach($_POST['no_volunteer'] as $numvol){
 			$total=$total+$numvol;
 		}
 
@@ -43,20 +43,32 @@
 													      event_start = '$start',
 														  event_end = '$end',
 														  event_material_req = '".$_POST['event_material_req']."'
-														 
-
-
 														  WHERE event_id =".$event_id."";
 		echo $update_query;											  	
 		$update = mysqli_query($sql,$update_query);
 		var_dump($update);
 	 		if($update){
-	 		header("location:organization_dashboard.php");
+			//daphne code insert occ
+			$occupationName = $_POST["occupation_name"];
+			$noVolunteers = $_POST["no_volunteer"];
+			foreach ($occupationName AS $key => $value){
+			$addocc_query = "UPDATE occupation_event SET occupationName='".$sql->real_escape_string($value)."',
+															noVolunteers= '".$sql->real_escape_string($noVolunteers[$key])."'";
+			echo $addocc_query."<br>";
+			
+			$addocc_data = mysqli_query($sql, $addocc_query);
+			if (!$addocc_data){
+				echo "ERROR IN QUERY 3"; 
+				}
+			}
+	 		
 	 		
 			}else{ "ERROR IN QUERY";	
 		}
 
 		move_uploaded_file($_FILES['event_img']['tmp_name'], $target_dir.$name);
+		
+		header("location:organization_dashboard.php");
 
 
 

@@ -185,9 +185,9 @@ $totalCount = $followCount + $preRegCount;
                                 <li>
                                     <a href="editOrganizationProfile.php">Edit Profile</a>
                                 </li>
-                                <!--<li>
-                                    WALA SA FOR NOW<a href="index-3.html">View Reports</a>
-                                </li>-->
+                                <li>
+                                    <a href="index-3.html">View Reports</a>
+                                </li>
                                 <li>
                                     <a href="../logout.php">Log Out</a>
                                 </li>

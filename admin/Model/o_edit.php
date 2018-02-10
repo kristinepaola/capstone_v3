@@ -5,7 +5,7 @@ include("../sql_connect.php");
 $page = isset($_GET['p'])? $_GET['p'] : '' ;
 
 if($page =='view'){
-	$result = "SELECT A.user_id, A.user_status, A.timestamp, B.organization_name, B.organization_mission, B.organization_vision
+	$result = "SELECT A.user_id, A.user_status, A.timestamp, B.organization_name, B.organization_mission, B.organization_vision, B.organization_date_established, B.organization_status
                       FROM user A, organization_details B
                       WHERE A.user_id = B.user_id AND A.user_type = 'organization'";
 
@@ -18,7 +18,8 @@ if($page =='view'){
                      			<td><?php echo $row[3] ?></td><!--Org Name-->
                           <td><?php echo $row[4] ?></td><!--Mission-->
                           <td><?php echo $row[5] ?></td><!--Vision-->
-                          <td><?php echo $row[1] ?></td><!--Status-->
+                          <td><?php echo $row[6] ?></td><!--Date Established-->
+                          <td><?php echo $row[7] ?></td><!--Status-->
                      			<td><?php echo $row[2] ?></td><!--Date Registered-->
                      		</tr>
                      	<?php
@@ -30,8 +31,8 @@ if($page =='view'){
 	$input = filter_input_array(INPUT_POST);
 
 	if ($input['action'] == 'edit') {
-		$row = "UPDATE user SET
-			status = '".$input["stat"]."'
+		$row = "UPDATE organization_details SET
+			organization_status = '".$input["stat"]."'
 			WHERE user_id = '".$input["id"]."'";
 
 		mysqli_query($sql,$row) or die(mysqli_error($sql));

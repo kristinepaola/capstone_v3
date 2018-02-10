@@ -33,7 +33,7 @@ $max_age = $_POST['age_req'][1];
 
 
 $org = "SELECT * FROM organization_details WHERE user_id = '$id'";
-$org_data = mysqli_query($sql, $data);
+$org_data = mysqli_query($sql, $org);
 $org_row = mysqli_fetch_array($org_data);
 $org_name = $org_row['organization_name'];
 
@@ -51,8 +51,10 @@ $addevent_query ="INSERT INTO event VALUES ('',
 								   'Upcoming',
 								   '$total',
 									0,
+									'unseen',
 								   NOW()
                                   )";
+								  echo $addevent_query;
 $addevent_data = mysqli_query ($sql, $addevent_query);
 if (!$addevent_data){
 	echo "ERROR IN QUERY 1";
